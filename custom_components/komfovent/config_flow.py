@@ -4,7 +4,7 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT
+from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT,CONF_DISCOVERY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
@@ -25,6 +25,7 @@ CONFIG_SCHEMA = vol.Schema(
         vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
         vol.Required(CONF_HOST): str,
         vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
+        vol.Required(CONF_DISCOVERY, default="auto"): str,
     }
 )
 OPTIONS_SCHEMA = vol.Schema(
