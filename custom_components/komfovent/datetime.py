@@ -18,9 +18,48 @@ if TYPE_CHECKING:
     from .coordinator import KomfoventCoordinator
 
 from . import registers
-from .const import DOMAIN
+from .const import DOMAIN, Controller
 from .helpers import build_device_info
 
+def _create_datetime_C4(coordinator: KomfoventCoordinator) -> list[KomfoventDateTime]:
+    return []
+
+
+def _create_datetime_C6(coordinator: KomfoventCoordinator) -> list[KomfoventDateTime]:
+    return [
+        KomfoventDateTime(
+            coordinator=coordinator,
+            register=registers.C6.REG_HOLIDAYS_FROM,
+            entity_description=DateTimeEntityDescription(
+                key="holidays_from",
+                name="Holidays From",
+                entity_registry_enabled_default=True,
+                entity_registry_visible_default=False,
+                entity_category=EntityCategory.CONFIG,
+            ),
+        ),
+        KomfoventDateTime(
+            coordinator=coordinator,
+            register=registers.C6.REG_HOLIDAYS_UNTIL,
+            entity_description=DateTimeEntityDescription(
+                key="holidays_until",
+                name="Holidays Until",
+                entity_registry_enabled_default=True,
+                entity_registry_visible_default=False,
+                entity_category=EntityCategory.CONFIG,
+            ),
+        ),
+    ]
+
+
+async def create_datetime(coordinator: KomfoventCoordinator,) -> list[KomfoventDateTime]:
+    """Create datetime entities for Komfovent device."""
+
+    if coordinator.controller == Controller.C4:
+        return _create_datetime_C4(coordinator)
+    else:
+        return _create_datetime_C6(coordinator)
+    
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -29,33 +68,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up Komfovent datetime entities."""
     coordinator: KomfoventCoordinator = hass.data[DOMAIN][entry.entry_id]
-
-    async_add_entities(
-        [
-            KomfoventDateTime(
-                coordinator=coordinator,
-                register_id=registers.REG_HOLIDAYS_FROM,
-                entity_description=DateTimeEntityDescription(
-                    key="holidays_from",
-                    name="Holidays From",
-                    entity_registry_enabled_default=True,
-                    entity_registry_visible_default=False,
-                    entity_category=EntityCategory.CONFIG,
-                ),
-            ),
-            KomfoventDateTime(
-                coordinator=coordinator,
-                register_id=registers.REG_HOLIDAYS_UNTIL,
-                entity_description=DateTimeEntityDescription(
-                    key="holidays_until",
-                    name="Holidays Until",
-                    entity_registry_enabled_default=True,
-                    entity_registry_visible_default=False,
-                    entity_category=EntityCategory.CONFIG,
-                ),
-            ),
-        ]
-    )
+    async_add_entities(await create_datetime(coordinator))
 
 
 class KomfoventDateTime(CoordinatorEntity["KomfoventCoordinator"], DateTimeEntity):
@@ -67,12 +80,12 @@ class KomfoventDateTime(CoordinatorEntity["KomfoventCoordinator"], DateTimeEntit
     def __init__(
         self,
         coordinator: KomfoventCoordinator,
-        register_id: int,
+        register: registers.Register,
         entity_description: DateTimeEntityDescription,
     ) -> None:
         """Initialize the datetime entity."""
         super().__init__(coordinator)
-        self.register_id = register_id
+        self.register = register
         self.entity_description = entity_description
         self._attr_unique_id = (
             f"{coordinator.config_entry.entry_id}_{entity_description.key}"
@@ -86,7 +99,7 @@ class KomfoventDateTime(CoordinatorEntity["KomfoventCoordinator"], DateTimeEntit
         if not self.coordinator.data:
             return None
 
-        value = self.coordinator.data.get(self.register_id)
+        value = self.coordinator.data.get(self.register)
         if value is None:
             return None
 
@@ -114,5 +127,5 @@ class KomfoventDateTime(CoordinatorEntity["KomfoventCoordinator"], DateTimeEntit
         seconds = int((value - local_epoch).total_seconds())
 
         # Write value to register
-        await self.coordinator.client.write(self.register_id, seconds)
+        await self.coordinator.client.write(self.register, seconds)
         await self.coordinator.async_request_refresh()

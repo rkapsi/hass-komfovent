@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from enum import IntEnum
+from enum import IntEnum, StrEnum
 from typing import Final
 
 DOMAIN = "komfovent"
@@ -12,6 +12,7 @@ DEFAULT_NAME = "Komfovent"
 DEFAULT_HOST: Final = None
 DEFAULT_PORT = 502
 DEFAULT_SLAVE_ID: Final = 254
+CONF_PROTOCOL: Final = "protocol"
 
 # Options
 OPT_UPDATE_INTERVAL: Final = "update_interval"
@@ -34,16 +35,25 @@ DEFAULT_STEP_VOC: Final = 5.0
 DEFAULT_STEP_TIMER: Final = 5.0
 
 
+class Protocol(StrEnum):
+    """"Komfovent Protocol"""
+    AUTO = "auto"
+    C4 = "C4"
+
+
 class Controller(IntEnum):
     """Controllers."""
 
+    C4 = -1
     C6 = 0
     C6M = 1
     C8 = 2
     NA = 15
 
+class OperationModeX(IntEnum):
+    pass
 
-class OperationMode(IntEnum):
+class OperationMode(OperationModeX):
     """Operation modes."""
 
     STANDBY = 0
@@ -58,7 +68,12 @@ class OperationMode(IntEnum):
     AIR_QUALITY = 9
     OFF = 10
 
-
+class Bar(OperationModeX):
+    OFF = 0
+    AWAY = 1
+    NORMAL = 2
+    INTENSIVE = 3
+    
 class SchedulerMode(IntEnum):
     """Scheduler operation modes."""
 
@@ -205,3 +220,20 @@ class ResetSettings(IntEnum):
     AIR_QUALITY = 9
     ECO = 10
     ADVANCED = 11
+
+class Season_C4(IntEnum):
+    """Bla"""
+
+    SUMMER = 0
+    WINTER = 1
+
+class VentilationLevel_C4(IntEnum):
+    """Bla"""
+
+    MODE1 = 1
+    MODE2 = 2
+    MODE3 = 3
+
+class OperationMode_C4(IntEnum):
+    MANUAL = 0
+    AUTO = 1

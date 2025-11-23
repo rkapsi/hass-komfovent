@@ -16,16 +16,15 @@ if TYPE_CHECKING:
     from .coordinator import KomfoventCoordinator
 
 from . import registers
-from .const import DOMAIN
+from .const import DOMAIN, Controller
 from .helpers import build_device_info
 
-
-async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
+def _create_switches_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
     """Create switch entities for Komfovent device."""
     return [
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_POWER,
+            register=registers.C4.POWER,
             entity_description=SwitchEntityDescription(
                 key="power",
                 name="Power",
@@ -33,9 +32,25 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
                 entity_category=None,
             ),
         ),
+    ]
+
+def _create_switches_C6(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
+    """Create switch entities for Komfovent device."""
+    return [
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_ECO_MODE,
+            register=registers.C6.REG_POWER,
+            entity_description=SwitchEntityDescription(
+                key="power",
+                name="Power",
+                icon="mdi:power",
+                entity_registry_enabled_default=True,
+                entity_category=None,
+            ),
+        ),
+        KomfoventSwitch(
+            coordinator=coordinator,
+            register=registers.C6.REG_ECO_MODE,
             entity_description=SwitchEntityDescription(
                 key="eco_mode",
                 name="ECO Mode",
@@ -45,7 +60,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_AUTO_MODE,
+            register=registers.C6.REG_AUTO_MODE,
             entity_description=SwitchEntityDescription(
                 key="auto_mode",
                 name="AUTO Mode",
@@ -55,7 +70,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_AQ_IMPURITY_CONTROL,
+            register=registers.C6.REG_AQ_IMPURITY_CONTROL,
             entity_description=SwitchEntityDescription(
                 key="aq_impurity_control",
                 name="AQ Impurity Control",
@@ -65,7 +80,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_AQ_HUMIDITY_CONTROL,
+            register=registers.C6.REG_AQ_HUMIDITY_CONTROL,
             entity_description=SwitchEntityDescription(
                 key="aq_humidity_control",
                 name="AQ Humidity Control",
@@ -75,7 +90,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_AQ_ELECTRIC_HEATER,
+            register=registers.C6.REG_AQ_ELECTRIC_HEATER,
             entity_description=SwitchEntityDescription(
                 key="aq_electric_heater",
                 name="AQ Electric Heater",
@@ -84,7 +99,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_ECO_FREE_HEAT_COOL,
+            register=registers.C6.REG_ECO_FREE_HEAT_COOL,
             entity_description=SwitchEntityDescription(
                 key="eco_free_heat_cool",
                 name="ECO Free Heating/Cooling",
@@ -94,7 +109,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_ECO_HEATER_BLOCKING,
+            register=registers.C6.REG_ECO_HEATER_BLOCKING,
             entity_description=SwitchEntityDescription(
                 key="eco_heater_blocking",
                 name="ECO Heater Blocking",
@@ -104,7 +119,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_ECO_COOLER_BLOCKING,
+            register=registers.C6.REG_ECO_COOLER_BLOCKING,
             entity_description=SwitchEntityDescription(
                 key="eco_cooler_blocking",
                 name="ECO Cooler Blocking",
@@ -114,7 +129,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_AWAY_HEATER,
+            register=registers.C6.REG_AWAY_HEATER,
             entity_description=SwitchEntityDescription(
                 key="away_electric_heater",
                 name="Away Electric Heater",
@@ -125,7 +140,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_NORMAL_HEATER,
+            register=registers.C6.REG_NORMAL_HEATER,
             entity_description=SwitchEntityDescription(
                 key="normal_electric_heater",
                 name="Normal Electric Heater",
@@ -136,7 +151,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_INTENSIVE_HEATER,
+            register=registers.C6.REG_INTENSIVE_HEATER,
             entity_description=SwitchEntityDescription(
                 key="intensive_electric_heater",
                 name="Intensive Electric Heater",
@@ -147,7 +162,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_BOOST_HEATER,
+            register=registers.C6.REG_BOOST_HEATER,
             entity_description=SwitchEntityDescription(
                 key="boost_electric_heater",
                 name="Boost Electric Heater",
@@ -158,7 +173,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_KITCHEN_HEATER,
+            register=registers.C6.REG_KITCHEN_HEATER,
             entity_description=SwitchEntityDescription(
                 key="kitchen_electric_heater",
                 name="Kitchen Electric Heater",
@@ -169,7 +184,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_FIREPLACE_HEATER,
+            register=registers.C6.REG_FIREPLACE_HEATER,
             entity_description=SwitchEntityDescription(
                 key="fireplace_electric_heater",
                 name="Fireplace Electric Heater",
@@ -180,7 +195,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_OVERRIDE_HEATER,
+            register=registers.C6.REG_OVERRIDE_HEATER,
             entity_description=SwitchEntityDescription(
                 key="override_electric_heater",
                 name="Override Electric Heater",
@@ -191,7 +206,7 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
         ),
         KomfoventSwitch(
             coordinator=coordinator,
-            register_id=registers.REG_HOLIDAYS_HEATER,
+            register=registers.C6.REG_HOLIDAYS_HEATER,
             entity_description=SwitchEntityDescription(
                 key="holidays_electric_heater",
                 name="Holidays Electric Heater",
@@ -201,6 +216,14 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
             ),
         ),
     ]
+
+async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
+    """Create switch entities for Komfovent device."""
+
+    if coordinator.controller == Controller.C4:
+        return _create_switches_C4(coordinator)
+    else:
+        return _create_switches_C6(coordinator)
 
 
 async def async_setup_entry(
@@ -223,12 +246,12 @@ class KomfoventSwitch(CoordinatorEntity["KomfoventCoordinator"], SwitchEntity):
     def __init__(
         self,
         coordinator: KomfoventCoordinator,
-        register_id: int,
+        register: registers.Register,
         entity_description: SwitchEntityDescription,
     ) -> None:
         """Initialize the switch."""
         super().__init__(coordinator)
-        self.register_id = register_id
+        self.register = register
         self.entity_description = entity_description
         self._attr_unique_id = (
             f"{coordinator.config_entry.entry_id}_{entity_description.key}"
@@ -241,17 +264,17 @@ class KomfoventSwitch(CoordinatorEntity["KomfoventCoordinator"], SwitchEntity):
         """Return True if entity is on."""
         if not self.coordinator.data:
             return None
-        value = self.coordinator.data.get(self.register_id)
+        value = self.coordinator.data.get(self.register)
         if value is None:
             return None
         return bool(value)
 
     async def async_turn_on(self, **_kwargs: dict) -> None:
         """Turn the entity on."""
-        await self.coordinator.client.write(self.register_id, 1)
+        await self.coordinator.client.write(self.register, 1)
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **_kwargs: dict) -> None:
         """Turn the entity off."""
-        await self.coordinator.client.write(self.register_id, 0)
+        await self.coordinator.client.write(self.register, 0)
         await self.coordinator.async_request_refresh()

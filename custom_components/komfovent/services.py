@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import device_registry as dr
 
 from . import KomfoventCoordinator, registers
-from .const import DOMAIN, OperationMode
+from .const import DOMAIN, OperationMode, Bar, Controller
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,10 +31,27 @@ def get_coordinator_for_device(
 
 async def clean_filters_calibration(coordinator: KomfoventCoordinator) -> None:
     """Reset filters counter."""
-    await coordinator.client.write(registers.REG_CLEAN_FILTERS, 1)
+    await coordinator.client.write(registers.C6.REG_CLEAN_FILTERS, 1)
 
 
-async def set_operation_mode(
+async def _set_operation_mode_C4(
+    coordinator: KomfoventCoordinator, mode: str, minutes: int | None = None
+) -> None:
+    """Set operation mode on the Komfovent unit."""
+    try:
+        operation_mode = Bar[mode.upper()]
+    except ValueError:
+        _LOGGER.warning("Invalid operation mode: %s", mode)
+        return
+    
+    if operation_mode == Bar.OFF:
+        await coordinator.client.write(registers.C4.POWER, 0)
+    else:
+        await coordinator.client.write(
+            registers.C4.VENTILATION_LEVEL_MANUAL, operation_mode.value
+        )
+
+async def _set_operation_mode_C6(
     coordinator: KomfoventCoordinator, mode: str, minutes: int | None = None
 ) -> None:
     """Set operation mode on the Komfovent unit."""
@@ -45,9 +62,9 @@ async def set_operation_mode(
         return
 
     if operation_mode == OperationMode.OFF:
-        await coordinator.client.write(registers.REG_POWER, 0)
+        await coordinator.client.write(registers.C6.REG_POWER, 0)
     elif operation_mode == OperationMode.AIR_QUALITY:
-        await coordinator.client.write(registers.REG_AUTO_MODE, 1)
+        await coordinator.client.write(registers.C6.REG_AUTO_MODE, 1)
     elif operation_mode in {
         OperationMode.AWAY,
         OperationMode.NORMAL,
@@ -55,32 +72,41 @@ async def set_operation_mode(
         OperationMode.BOOST,
     }:
         await coordinator.client.write(
-            registers.REG_OPERATION_MODE, operation_mode.value
+            registers.C6.REG_OPERATION_MODE, operation_mode.value
         )
     elif operation_mode == OperationMode.KITCHEN:
         await coordinator.client.write(
-            registers.REG_KITCHEN_TIMER,
+            registers.C6.REG_KITCHEN_TIMER,
             minutes
-            or coordinator.data.get(registers.REG_KITCHEN_TIMER)
+            or coordinator.data.get(registers.C6.REG_KITCHEN_TIMER)
             or DEFAULT_MODE_TIMER,
         )
     elif operation_mode == OperationMode.FIREPLACE:
         await coordinator.client.write(
-            registers.REG_FIREPLACE_TIMER,
+            registers.C6.REG_FIREPLACE_TIMER,
             minutes
-            or coordinator.data.get(registers.REG_FIREPLACE_TIMER)
+            or coordinator.data.get(registers.C6.REG_FIREPLACE_TIMER)
             or DEFAULT_MODE_TIMER,
         )
     elif operation_mode == OperationMode.OVERRIDE:
         await coordinator.client.write(
-            registers.REG_OVERRIDE_TIMER,
+            registers.C6.REG_OVERRIDE_TIMER,
             minutes
-            or coordinator.data.get(registers.REG_OVERRIDE_TIMER)
+            or coordinator.data.get(registers.C6.REG_OVERRIDE_TIMER)
             or DEFAULT_MODE_TIMER,
         )
     else:
         # Log a warning, don't change the mode and proceed to request a refresh
         _LOGGER.warning("Unsupported operation mode: %s", mode)
+
+async def set_operation_mode(
+    coordinator: KomfoventCoordinator, mode: str, minutes: int | None = None
+) -> None:
+    
+    if coordinator.controller == Controller.C4:
+        await _set_operation_mode_C4(coordinator, mode, minutes)
+    else:
+        await _set_operation_mode_C6(coordinator, mode, minutes)
 
     # Set cooldown to allow the controller to process the command before next poll
     coordinator.set_cooldown(1.0)
@@ -88,18 +114,25 @@ async def set_operation_mode(
     # Refresh the coordinator data to reflect the changes
     await coordinator.async_request_refresh()
 
-
 async def set_system_time(coordinator: KomfoventCoordinator) -> None:
     """Set system time on the Komfovent unit."""
     # Initialize local epoch (1970-01-01 00:00:00 in local timezone)
     local_tz = zoneinfo.ZoneInfo(str(coordinator.hass.config.time_zone))
-    local_epoch = datetime(1970, 1, 1, tzinfo=local_tz)
-
-    # Calculate local time as seconds since local epoch
-    local_time = int((datetime.now(tz=local_tz) - local_epoch).total_seconds())
+    now = datetime.now(tz=local_tz)
 
     # Write local time to the Komfovent unit
-    await coordinator.client.write(registers.REG_EPOCH_TIME, local_time)
+    if coordinator.controller == Controller.C4:
+        await coordinator.client.write(registers.C4.TIME, (now.hour << 8) + now.minute)
+        await coordinator.client.write(registers.C4.DAY_OF_THE_WEEK, now.isoweekday())
+        await coordinator.client.write(registers.C4.MONTH_DAY, (now.month << 8) + now.day)
+        await coordinator.client.write(registers.C4.YEAR, now.year)
+
+    else:
+        # Calculate local time as seconds since local epoch
+        local_epoch = datetime(1970, 1, 1, tzinfo=local_tz)
+        local_time = int((now - local_epoch).total_seconds())
+
+        await coordinator.client.write(registers.C6.REG_EPOCH_TIME, local_time)
 
 
 async def async_register_services(hass: HomeAssistant) -> None:

@@ -7,7 +7,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Any
 
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_HOST, CONF_PORT, CONF_PROTOCOL
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import (
     TimestampDataUpdateCoordinator,
@@ -20,6 +20,8 @@ from . import registers
 from .const import (
     DEFAULT_EMA_TIME_CONSTANT,
     DEFAULT_UPDATE_INTERVAL,
+    Protocol,
+    CONF_PROTOCOL,
     DOMAIN,
     ConnectedPanels,
     Controller,
@@ -65,6 +67,7 @@ class KomfoventCoordinator(TimestampDataUpdateCoordinator[dict[int, Any]]):
         self.client = KomfoventModbusClient(
             host=config_entry.data[CONF_HOST],
             port=config_entry.data[CONF_PORT],
+            protocol=config_entry.data[CONF_PROTOCOL] or Protocol.AUTO,
         )
         self.ema_time_constant = ema_time_constant
 
@@ -88,11 +91,19 @@ class KomfoventCoordinator(TimestampDataUpdateCoordinator[dict[int, Any]]):
         if not connected:
             raise ConfigEntryNotReady(connection_error)
 
+        # The C4 Controller (PING2) doesn't have any version information or
+        # any other identifiable information. You have to know upfront that
+        # you're communicating with a C4 unit.
+        if self.client.protocol == Protocol.C4:
+            self.controller = Controller.C4
+            self.func_version = 0
+            return True
+        
         error_msg = "Failed to read controller firmware version"
         try:
             # Get firmware version and extract functional version from it
-            fw_data = await self.client.read(registers.REG_FIRMWARE, 2)
-            fw_version = get_version_from_int(fw_data.get(registers.REG_FIRMWARE, 0))
+            fw_data = await self.client.read(registers.C6.REG_FIRMWARE)
+            fw_version = get_version_from_int(fw_data)
             self.controller = fw_version[0]
             self.func_version = fw_version[4]
         except (ConnectionError, ModbusException) as error:
@@ -101,7 +112,23 @@ class KomfoventCoordinator(TimestampDataUpdateCoordinator[dict[int, Any]]):
 
         return True
 
-    async def _async_update_data(self) -> dict[int, Any]:
+    async def _async_update_data_C4(self) -> dict[str, Any]:
+        """Fetch data from Komfovent."""
+
+        data = {}
+
+        for register in registers.C4.POWER.sublist(14):
+            data.update({register: await self.client.read(register)})
+
+        for register in registers.C4.VENTILATION_LEVEL_MANUAL.sublist(17):
+            data.update({register: await self.client.read(register)})
+
+        for register in registers.C4.SUPPLY_AIR_TEMP.sublist(6):
+            data.update({register: await self.client.read(register)})
+
+        return data
+
+    async def _async_update_data_C6(self) -> dict[str, Any]:
         """Fetch data from Komfovent."""
         await self._wait_for_cooldown()
 
@@ -192,7 +219,27 @@ class KomfoventCoordinator(TimestampDataUpdateCoordinator[dict[int, Any]]):
             _LOGGER.warning("Error communicating with Komfovent: %s", error)
             raise UpdateFailed from error
 
+        return data
+
+    async def _async_update_data(self) -> dict[str, Any]:
+        """Fetch data from Komfovent."""
+
+        data = {}
+
+        try:
+            if self.controller == Controller.C4:
+                data = await self._async_update_data_C4()
+            else:
+                data = await self._async_update_data_C6()
+
+        except (ConnectionError, ModbusException) as error:
+            _LOGGER.warning("Error communicating with Komfovent: %s", error)
+            raise UpdateFailed from error
+
+<<<<<<< HEAD
         self._apply_ema_on_update_data(data)
+=======
+>>>>>>> 920db0a (lvl1,2,3)
         return data
 
     def _apply_ema_on_update_data(self, data: dict[int, Any]) -> None:
