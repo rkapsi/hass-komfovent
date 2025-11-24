@@ -10,6 +10,7 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import selector
 
 from .const import (
+    Protocol,
     DEFAULT_NAME,
     DEFAULT_PORT,
     DOMAIN,
@@ -22,8 +23,8 @@ from .const import (
 )
 
 CONFIG_KOMFOVENT_PROTOCOL = [
-    {"label": "Auto", "value": "auto"},
-    {"label": "C4", "value": "C4"},
+    {"label": "Auto", "value": Protocol.AUTO.value},
+    {"label": "C4", "value": Protocol.C4.value},
 ]
 
 CONFIG_SCHEMA = vol.Schema(

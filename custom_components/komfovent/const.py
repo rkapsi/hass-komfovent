@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from enum import IntEnum
+from enum import IntEnum, StrEnum
 from typing import Final
 
 DOMAIN = "komfovent"
@@ -30,9 +30,15 @@ DEFAULT_STEP_VOC: Final = 5.0
 DEFAULT_STEP_TIMER: Final = 5.0
 
 
+class Protocol(StrEnum):
+    """"Komfovent Protocol"""
+    AUTO = "auto"
+    C4 = "C4"
+
 class Controller(IntEnum):
     """Controllers."""
 
+    C4 = -1
     C6 = 0
     C6M = 1
     C8 = 2
