@@ -5,7 +5,7 @@ from datetime import timedelta
 from typing import Any
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_HOST, CONF_PORT, CONF_PROTOCOL
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.typing import UNDEFINED, UndefinedType
@@ -51,6 +51,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         self.client = KomfoventModbusClient(
             host=config_entry.data[CONF_HOST],
             port=config_entry.data[CONF_PORT],
+            protocol=config_entry.data[CONF_PROTOCOL],
         )
 
     async def connect(self) -> bool:
