@@ -4,7 +4,7 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT, CONF_DEVICE
+from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT, CONF_PROTOCOL
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import selector
@@ -21,7 +21,7 @@ from .const import (
     OPT_STEP_VOC,
 )
 
-CONFIG_BLA = [
+CONFIG_KOMFOVENT_PROTOCOL = [
     {"label": "Auto", "value": "auto"},
     {"label": "C4", "value": "C4"},
 ]
@@ -31,10 +31,10 @@ CONFIG_SCHEMA = vol.Schema(
         vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
         vol.Required(CONF_HOST): str,
         vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
-        vol.Required(CONF_DEVICE, default=CONFIG_BLA[0]["value"]): selector(
+        vol.Required(CONF_PROTOCOL, default=CONFIG_KOMFOVENT_PROTOCOL[0]["value"]): selector(
             {
                 "select": {
-                    "options": CONFIG_BLA,
+                    "options": CONFIG_KOMFOVENT_PROTOCOL,
                     "mode": "dropdown",
                 },
             }
