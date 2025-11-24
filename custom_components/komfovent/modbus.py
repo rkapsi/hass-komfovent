@@ -31,6 +31,7 @@ class KomfoventModbusClient:
             reconnect_delay_max=60,
         )
 
+        _LOGGER.warning("PROTCOL: %s", protocol)
         self.protocol = protocol
         self._lock = asyncio.Lock()
 
