@@ -14,6 +14,7 @@ from pymodbus.exceptions import ModbusException
 
 from . import registers
 from .const import (
+    Protocol,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     ConnectedPanels,
@@ -51,7 +52,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         self.client = KomfoventModbusClient(
             host=config_entry.data[CONF_HOST],
             port=config_entry.data[CONF_PORT],
-            protocol=config_entry.data[CONF_PROTOCOL],
+            protocol=config_entry.data[CONF_PROTOCOL] or Protocol.AUTO,
         )
 
     async def connect(self) -> bool:
