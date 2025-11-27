@@ -63,6 +63,13 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         if not connected:
             raise ConfigEntryNotReady(connection_error)
 
+        # The C4 Controller (PING2) doesn't have any version information or
+        # any other identifiable information.
+        if self.client.protocol == Protocol.C4:
+            self.controller = Controller.C4
+            self.func_version = 0
+            return True
+        
         error_msg = "Failed to read controller firmware version"
         try:
             # Get firmware version and extract functional version from it
