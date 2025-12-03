@@ -14,7 +14,8 @@ from pymodbus.exceptions import ModbusException
 
 from . import registers
 from .const import (
-    Protocol,
+    Connector,
+    CONF_CONNECTOR,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     ConnectedPanels,
@@ -52,7 +53,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         self.client = KomfoventModbusClient(
             host=config_entry.data[CONF_HOST],
             port=config_entry.data[CONF_PORT],
-            protocol=config_entry.data[CONF_PROTOCOL] or Protocol.AUTO,
+            connector=config_entry.data[CONF_CONNECTOR] or Connector.AUTO,
         )
 
     async def connect(self) -> bool:
@@ -64,8 +65,9 @@ class KomfoventCoordinator(DataUpdateCoordinator):
             raise ConfigEntryNotReady(connection_error)
 
         # The C4 Controller (PING2) doesn't have any version information or
-        # any other identifiable information.
-        if self.client.protocol == Protocol.C4:
+        # any other identifiable information. You have to know upfront that
+        # you're communicating with a C4 unit.
+        if self.client.connector == Connector.C4:
             self.controller = Controller.C4
             self.func_version = 0
             return True

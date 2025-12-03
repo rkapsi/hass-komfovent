@@ -5,7 +5,52 @@ This module contains the register addresses and register sets used for communica
 with Komfovent ventilation units via Modbus TCP.
 """
 
+from enum import Enum, IntEnum
 from __future__ import annotations
+
+class Access(Enum):
+    READ_ONLY = 0
+    READ_WRITE = 1
+
+class Datatype(Enum):
+    boolean = 0
+    int8 = 1
+    uint8 = 2
+    int16 = 3
+    uint16 = 4
+    int32 = 5
+    uint32 = 6
+
+class Foo(IntEnum):
+    # General
+    POWER                   = (1000, Datatype.int8, Access.READ_WRITE)
+    SEASON                  = (1001, Datatype.int8, Access.READ_WRITE)
+    TIME                    = (1002, Datatype.uint16, Access.READ_WRITE)
+    DAY_OF_THE_WEEK         = (1003, Datatype.int8, Access.READ_WRITE)
+    MONTH_DAY               = (1004, Datatype.uint16, Access.READ_ONLY)
+    YEAR                    = (1005, Datatype.int8, Access.READ_WRITE)
+    MODBUS_ADDRESS          = (1006, Datatype.int8, Access.READ_WRITE)
+    ALARM_STATUS_WARNINGS   = (1007, Datatype.boolean, Access.READ_ONLY)
+    ALARM_STATUS_STOP_FLAGS = (1008, Datatype.boolean, Access.READ_ONLY)
+    ALARM_STATUS_STOP_CODE  = (1009, Datatype.boolean, Access.READ_ONLY)
+    RECUPERATOR_LEVEL       = (1010, Datatype.int8, Access.READ_ONLY)
+    ELECTRIC_HEATER_LEVEL   = (1011, Datatype.int8, Access.READ_ONLY)
+    WATER_HEATING_LEVEL     = (1012, Datatype.int8, Access.READ_ONLY)
+    WATER_COOLING_LEVEL     = (1013, Datatype.int8, Access.READ_ONLY)
+
+    # Ventilation
+    VENTILATION_LEVEL_MANUAL    = (1100, Datatype.int8, Access.READ_WRITE)
+    VENTILATION_LEVEL_CURRENT   = (1101, Datatype.int8, Access.READ_ONLY)
+    MODE                        = (1102, Datatype.int8, Access.READ_WRITE)
+
+    # Temperature
+
+    # Scheduling
+    
+    def __init__(self, value, datatype, access):
+        self._value = value
+        self.datatype = datatype
+        self.access = access
 
 # Modbus registers - Basic Control
 REG_POWER = 1  # ON/OFF status
