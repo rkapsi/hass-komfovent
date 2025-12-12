@@ -27,7 +27,7 @@ class Datatype(Enum):
 
 #
 # Base class for Kmfovent Modbus registers
-class Registers(IntEnum):
+class KomfoventRegister(IntEnum):
     def __init__(self, value: int, datatype: Datatype, access: Access):
         self._value = value
         self.datatype = datatype
@@ -36,7 +36,7 @@ class Registers(IntEnum):
 #
 # List of Komfovent C4 Modbus registers
 #
-class C4_Registers(Registers):
+class C4(KomfoventRegister):
     # General
     POWER                       = (1000, Datatype.int8, Access.READ_WRITE)
     SEASON                      = (1001, Datatype.int8, Access.READ_WRITE)
@@ -164,7 +164,7 @@ class C4_Registers(Registers):
 #
 # List of C6 Modbus registers
 #
-class C6_Registers(Registers):
+class C6(KomfoventRegister):
     # Modbus registers - Basic Control
     REG_POWER = (1, Datatype.uint16, Access.READ_WRITE) # ON/OFF status
     REG_AUTO_MODE_CONTROL = (2, Datatype.uint16, Access.READ_WRITE) # Auto mode control
