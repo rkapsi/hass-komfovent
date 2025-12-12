@@ -8,10 +8,14 @@ with Komfovent ventilation units via Modbus TCP.
 from enum import Enum, IntEnum
 from __future__ import annotations
 
+#
+# The access mode of a Komfovent Modbus register
 class Access(Enum):
     READ_ONLY = 0
     READ_WRITE = 1
 
+#
+# The datatype of a Komfovent Modbus register
 class Datatype(Enum):
     boolean = 0
     int8 = 1
@@ -21,13 +25,18 @@ class Datatype(Enum):
     int32 = 5
     uint32 = 6
 
-class MooEnum(IntEnum):
+#
+# Base class for Kmfovent Modbus registers
+class Registers(IntEnum):
     def __init__(self, value: int, datatype: Datatype, access: Access):
         self._value = value
         self.datatype = datatype
         self.access = access
 
-class Foo(MooEnum):
+#
+# List of Komfovent C4 Modbus registers
+#
+class C4_Registers(Registers):
     # General
     POWER                       = (1000, Datatype.int8, Access.READ_WRITE)
     SEASON                      = (1001, Datatype.int8, Access.READ_WRITE)
@@ -152,8 +161,10 @@ class Foo(MooEnum):
     SUNDAY_VENTILATION_LEVEL2   = (1361, Datatype.int8, Access.READ_ONLY)
     SUNDAY_VENTILATION_LEVEL3   = (1362, Datatype.int8, Access.READ_ONLY)
 
-
-class Moo(MooEnum):
+#
+# List of C6 Modbus registers
+#
+class C6_Registers(Registers):
     # Modbus registers - Basic Control
     REG_POWER = (1, Datatype.uint16, Access.READ_WRITE) # ON/OFF status
     REG_AUTO_MODE_CONTROL = (2, Datatype.uint16, Access.READ_WRITE) # Auto mode control
