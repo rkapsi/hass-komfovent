@@ -8,10 +8,16 @@ from pymodbus.client import AsyncModbusTcpClient
 
 from .const import Protocol
 
+#from .registers import (
+#    REGISTERS_16BIT_SIGNED,
+#    REGISTERS_16BIT_UNSIGNED,
+#    REGISTERS_32BIT_UNSIGNED,
+#)
+
 from .registers import (
-    REGISTERS_16BIT_SIGNED,
-    REGISTERS_16BIT_UNSIGNED,
-    REGISTERS_32BIT_UNSIGNED,
+    Access,
+    Datatype,
+    Register,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,67 +48,53 @@ class KomfoventModbusClient:
         """Close the Modbus connection."""
         self.client.close()
 
-    async def read(self, register: int, count: int) -> dict[int, int]:
+    async def read(self, register: Register) -> int:
         """Read holding registers and return dict keyed by absolute register numbers."""
         async with self._lock:
+            
             result = await self.client.read_holding_registers(
-                address=register - 1, count=count
+                address=register.address, count=register.datatype.count
             )
 
         if result.isError():
             msg = f"Error reading registers at {register}"
             raise ModbusException(msg)
 
-        # Create dictionary with absolute register numbers as keys
-        block = dict(enumerate(result.registers, start=register))
-        converted = set()
-        data = {}
+        if register.datatype == Datatype.uint16:
+            return result.registers[0]
+        
+        elif register.datatype == Datatype.int16:
+            return result.registers[0] - (result.registers[0] >> 15 << 16)
+        
+        elif register.datatype == Datatype.uint32:
+            return (result.registers[0] << 16) + result.registers[1]
 
-        for reg, value in block.items():
-            if reg in REGISTERS_16BIT_UNSIGNED:
-                # For 16-bit unsigned registers, use value directly
-                converted.add(reg)
-                data[reg] = value
-            elif reg in REGISTERS_16BIT_SIGNED:
-                # For 16-bit signed registers, use need to convert uint16 to int16
-                converted.add(reg)
-                data[reg] = value - (value >> 15 << 16)
-            elif reg in REGISTERS_32BIT_UNSIGNED:
-                # For 32-bit registers, combine with next register
-                if reg + 1 not in block:
-                    msg = f"Register {reg + 1} value not retrieved"
-                    raise ValueError(msg)
-                converted.add(reg)
-                converted.add(reg + 1)
-                data[reg] = (value << 16) + block[reg + 1]
+        raise NotImplementedError()
 
-        if not_converted := set(block.keys()) - converted:
-            msg = (
-                f"Registers {not_converted} not found in either "
-                "16-bit or 32-bit register sets"
-            )
-            raise NotImplementedError(msg)
-
-        return data
-
-    async def write(self, register: int, value: int) -> None:
+    async def write(self, register: Register, value: int) -> None:
         """Write to holding register."""
+
+        if register.access == Access.READ_ONLY:
+            raise ModbusException()
+        
         async with self._lock:
-            if register in REGISTERS_16BIT_UNSIGNED:
+            if register.datatype == Datatype.uint16:
                 # Write unsigned value as-is
-                result = await self.client.write_register(register - 1, value)
-            elif register in REGISTERS_16BIT_SIGNED:
+                result = await self.client.write_register(register.address, value)
+
+            elif register.datatype == Datatype.int16:
                 # Convert signed value to 16-bit unsigned for Modbus
                 unsigned_value = value & 0xFFFF
-                result = await self.client.write_register(register - 1, unsigned_value)
-            elif register in REGISTERS_32BIT_UNSIGNED:
+                result = await self.client.write_register(register.address, unsigned_value)
+
+            elif register.datatype == Datatype.uint32:
                 # Split 32-bit value into two 16-bit values
                 high_word = (value >> 16) & 0xFFFF
                 low_word = value & 0xFFFF
 
                 # Write both words in a single transaction
                 result = await self.client.write_registers(
-                    address=register - 1, values=[high_word, low_word]
+                    address=register.address, values=[high_word, low_word]
                 )
             else:
                 msg = (
@@ -110,7 +102,7 @@ class KomfoventModbusClient:
                     "16-bit or 32-bit register sets"
                 )
                 raise NotImplementedError(msg)
-
+            
         if result.isError():
             msg = f"Error writing register at {register}"
             raise ModbusException(msg)

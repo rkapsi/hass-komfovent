@@ -16,72 +16,75 @@ class Access(Enum):
 
 #
 # The datatype of a Komfovent Modbus register
-class Datatype(Enum):
-    boolean = 0
-    int8 = 1
-    uint8 = 2
-    int16 = 3
-    uint16 = 4
-    int32 = 5
-    uint32 = 6
+class Datatype(IntEnum):
+    boolean = (0, 1)
+    int16   = (1, 1)
+    uint16  = (2, 1)
+    int32   = (3, 2)
+    uint32  = (4, 2)
+
+    def __init__(self, value: int, count: int):
+        self._value = value
+        self.count = count
 
 #
 # Base class for Kmfovent Modbus registers
-class KomfoventRegister(IntEnum):
+class Register(IntEnum):
     def __init__(self, value: int, datatype: Datatype, access: Access):
         self._value = value
+        self.address = value - 1
         self.datatype = datatype
         self.access = access
 
 #
 # List of Komfovent C4 Modbus registers
 #
-class C4(KomfoventRegister):
+class C4(Register):
     # General
-    POWER                       = (1000, Datatype.int8, Access.READ_WRITE)
-    SEASON                      = (1001, Datatype.int8, Access.READ_WRITE)
+    POWER                       = (1000, Datatype.int16, Access.READ_WRITE)
+    SEASON                      = (1001, Datatype.int16, Access.READ_WRITE)
     TIME                        = (1002, Datatype.uint16, Access.READ_WRITE)
-    DAY_OF_THE_WEEK             = (1003, Datatype.int8, Access.READ_WRITE)
+    DAY_OF_THE_WEEK             = (1003, Datatype.int16, Access.READ_WRITE)
     MONTH_DAY                   = (1004, Datatype.uint16, Access.READ_ONLY)
-    YEAR                        = (1005, Datatype.int8, Access.READ_WRITE)
-    MODBUS_ADDRESS              = (1006, Datatype.int8, Access.READ_WRITE)
+    YEAR                        = (1005, Datatype.int16, Access.READ_WRITE)
+    MODBUS_ADDRESS              = (1006, Datatype.int16, Access.READ_WRITE)
     ALARM_STATUS_WARNINGS       = (1007, Datatype.boolean, Access.READ_ONLY)
     ALARM_STATUS_STOP_FLAGS     = (1008, Datatype.boolean, Access.READ_ONLY)
     ALARM_STATUS_STOP_CODE      = (1009, Datatype.boolean, Access.READ_ONLY)
-    RECUPERATOR_LEVEL           = (1010, Datatype.int8, Access.READ_ONLY)
-    ELECTRIC_HEATER_LEVEL       = (1011, Datatype.int8, Access.READ_ONLY)
-    WATER_HEATING_LEVEL         = (1012, Datatype.int8, Access.READ_ONLY)
-    WATER_COOLING_LEVEL         = (1013, Datatype.int8, Access.READ_ONLY)
+    RECUPERATOR_LEVEL           = (1010, Datatype.int16, Access.READ_ONLY)
+    ELECTRIC_HEATER_LEVEL       = (1011, Datatype.int16, Access.READ_ONLY)
+    WATER_HEATING_LEVEL         = (1012, Datatype.int16, Access.READ_ONLY)
+    WATER_COOLING_LEVEL         = (1013, Datatype.int16, Access.READ_ONLY)
 
     # Ventilation
-    VENTILATION_LEVEL_MANUAL    = (1100, Datatype.int8, Access.READ_WRITE)
-    VENTILATION_LEVEL_CURRENT   = (1101, Datatype.int8, Access.READ_ONLY)
-    MODE                        = (1102, Datatype.int8, Access.READ_WRITE)
+    VENTILATION_LEVEL_MANUAL    = (1100, Datatype.int16, Access.READ_WRITE)
+    VENTILATION_LEVEL_CURRENT   = (1101, Datatype.int16, Access.READ_ONLY)
+    MODE                        = (1102, Datatype.int16, Access.READ_WRITE)
     
-    INTAKE_VENTILATION_LEVEL1   = (1103, Datatype.int8, Access.READ_WRITE)
-    INTAKE_VENTILATION_LEVEL2   = (1104, Datatype.int8, Access.READ_WRITE)
-    INTAKE_VENTILATION_LEVEL3   = (1105, Datatype.int8, Access.READ_WRITE)
-    INTAKE_VENTILATION_LEVEL4   = (1106, Datatype.int8, Access.READ_WRITE)
+    INTAKE_VENTILATION_LEVEL1   = (1103, Datatype.int16, Access.READ_WRITE)
+    INTAKE_VENTILATION_LEVEL2   = (1104, Datatype.int16, Access.READ_WRITE)
+    INTAKE_VENTILATION_LEVEL3   = (1105, Datatype.int16, Access.READ_WRITE)
+    INTAKE_VENTILATION_LEVEL4   = (1106, Datatype.int16, Access.READ_WRITE)
     
-    EXHAUST_VENTILATION_LEVEL1  = (1107, Datatype.int8, Access.READ_WRITE)
-    EXHAUST_VENTILATION_LEVEL2  = (1108, Datatype.int8, Access.READ_WRITE)
-    EXHAUST_VENTILATION_LEVEL3  = (1109, Datatype.int8, Access.READ_WRITE)
-    EXHAUST_VENTILATION_LEVEL4  = (1110, Datatype.int8, Access.READ_WRITE)
+    EXHAUST_VENTILATION_LEVEL1  = (1107, Datatype.int16, Access.READ_WRITE)
+    EXHAUST_VENTILATION_LEVEL2  = (1108, Datatype.int16, Access.READ_WRITE)
+    EXHAUST_VENTILATION_LEVEL3  = (1109, Datatype.int16, Access.READ_WRITE)
+    EXHAUST_VENTILATION_LEVEL4  = (1110, Datatype.int16, Access.READ_WRITE)
     
-    OVR_ENABLE                  = (1111, Datatype.int8, Access.READ_WRITE)
-    OVR_TIME_SET                = (1112, Datatype.int8, Access.READ_WRITE)
-    OVR_TIME_GET                = (1113, Datatype.int8, Access.READ_ONLY)
+    OVR_ENABLE                  = (1111, Datatype.int16, Access.READ_WRITE)
+    OVR_TIME_SET                = (1112, Datatype.int16, Access.READ_WRITE)
+    OVR_TIME_GET                = (1113, Datatype.int16, Access.READ_ONLY)
     AHU_FAN_STATUS              = (1114, Datatype.boolean, Access.READ_ONLY)
-    SUPPLY_FAN_LEVEL            = (1115, Datatype.int8, Access.READ_ONLY)
-    EXHAUST_FAN_LEVEL           = (1116, Datatype.int8, Access.READ_ONLY)
+    SUPPLY_FAN_LEVEL            = (1115, Datatype.int16, Access.READ_ONLY)
+    EXHAUST_FAN_LEVEL           = (1116, Datatype.int16, Access.READ_ONLY)
 
     # Temperature
-    SUPPLY_AIR_TEMP             = (1200, Datatype.int8, Access.READ_ONLY)
-    SETPOINT_TEMP               = (1201, Datatype.int8, Access.READ_WRITE)
-    TEMP_CORRECTION             = (1202, Datatype.int8, Access.READ_WRITE)
+    SUPPLY_AIR_TEMP             = (1200, Datatype.int16, Access.READ_ONLY)
+    SETPOINT_TEMP               = (1201, Datatype.int16, Access.READ_WRITE)
+    TEMP_CORRECTION             = (1202, Datatype.int16, Access.READ_WRITE)
     TEMP_CORRECTION_START_TIME  = (1203, Datatype.int16, Access.READ_WRITE)
     TEMP_CORRECTION_STOP_TIME   = (1204, Datatype.int16, Access.READ_WRITE)
-    WATER_TEMP                  = (1203, Datatype.int8, Access.READ_ONLY)
+    WATER_TEMP                  = (1203, Datatype.int16, Access.READ_ONLY)
 
     # Scheduling
     MONDAY_START_TIME1          = (1300, Datatype.uint16, Access.READ_WRITE)
@@ -133,38 +136,38 @@ class C4(KomfoventRegister):
     SUNDAY_START_TIME3          = (1340, Datatype.uint16, Access.READ_WRITE)
     SUNDAY_STOP_TIME3           = (1341, Datatype.uint16, Access.READ_WRITE)
 
-    MONDAY_VENTILATION_LEVEL1   = (1342, Datatype.int8, Access.READ_ONLY)
-    MONDAY_VENTILATION_LEVEL2   = (1343, Datatype.int8, Access.READ_ONLY)
-    MONDAY_VENTILATION_LEVEL3   = (1344, Datatype.int8, Access.READ_ONLY)
+    MONDAY_VENTILATION_LEVEL1   = (1342, Datatype.int16, Access.READ_ONLY)
+    MONDAY_VENTILATION_LEVEL2   = (1343, Datatype.int16, Access.READ_ONLY)
+    MONDAY_VENTILATION_LEVEL3   = (1344, Datatype.int16, Access.READ_ONLY)
 
-    TUESDAY_VENTILATION_LEVEL1  = (1345, Datatype.int8, Access.READ_ONLY)
-    TUESDAY_VENTILATION_LEVEL2  = (1346, Datatype.int8, Access.READ_ONLY)
-    TUESDAY_VENTILATION_LEVEL3  = (1347, Datatype.int8, Access.READ_ONLY)
+    TUESDAY_VENTILATION_LEVEL1  = (1345, Datatype.int16, Access.READ_ONLY)
+    TUESDAY_VENTILATION_LEVEL2  = (1346, Datatype.int16, Access.READ_ONLY)
+    TUESDAY_VENTILATION_LEVEL3  = (1347, Datatype.int16, Access.READ_ONLY)
 
-    WEDNESDAY_VENTILATION_LEVEL1 = (1348, Datatype.int8, Access.READ_ONLY)
-    WEDNESDAY_VENTILATION_LEVEL2 = (1349, Datatype.int8, Access.READ_ONLY)
-    WEDNESDAY_VENTILATION_LEVEL3 = (1350, Datatype.int8, Access.READ_ONLY)
+    WEDNESDAY_VENTILATION_LEVEL1 = (1348, Datatype.int16, Access.READ_ONLY)
+    WEDNESDAY_VENTILATION_LEVEL2 = (1349, Datatype.int16, Access.READ_ONLY)
+    WEDNESDAY_VENTILATION_LEVEL3 = (1350, Datatype.int16, Access.READ_ONLY)
 
-    THURSDAY_VENTILATION_LEVEL1 = (1351, Datatype.int8, Access.READ_ONLY)
-    THURSDAY_VENTILATION_LEVEL2 = (1352, Datatype.int8, Access.READ_ONLY)
-    THURSDAY_VENTILATION_LEVEL3 = (1353, Datatype.int8, Access.READ_ONLY)
+    THURSDAY_VENTILATION_LEVEL1 = (1351, Datatype.int16, Access.READ_ONLY)
+    THURSDAY_VENTILATION_LEVEL2 = (1352, Datatype.int16, Access.READ_ONLY)
+    THURSDAY_VENTILATION_LEVEL3 = (1353, Datatype.int16, Access.READ_ONLY)
 
-    FRIDAY_VENTILATION_LEVEL1   = (1354, Datatype.int8, Access.READ_ONLY)
-    FRIDAY_VENTILATION_LEVEL2   = (1355, Datatype.int8, Access.READ_ONLY)
-    FRIDAY_VENTILATION_LEVEL3   = (1356, Datatype.int8, Access.READ_ONLY)
+    FRIDAY_VENTILATION_LEVEL1   = (1354, Datatype.int16, Access.READ_ONLY)
+    FRIDAY_VENTILATION_LEVEL2   = (1355, Datatype.int16, Access.READ_ONLY)
+    FRIDAY_VENTILATION_LEVEL3   = (1356, Datatype.int16, Access.READ_ONLY)
 
-    SATURDAY_VENTILATION_LEVEL1 = (1357, Datatype.int8, Access.READ_ONLY)
-    SATURDAY_VENTILATION_LEVEL2 = (1358, Datatype.int8, Access.READ_ONLY)
-    SATURDAY_VENTILATION_LEVEL3 = (1359, Datatype.int8, Access.READ_ONLY)
+    SATURDAY_VENTILATION_LEVEL1 = (1357, Datatype.int16, Access.READ_ONLY)
+    SATURDAY_VENTILATION_LEVEL2 = (1358, Datatype.int16, Access.READ_ONLY)
+    SATURDAY_VENTILATION_LEVEL3 = (1359, Datatype.int16, Access.READ_ONLY)
 
-    SUNDAY_VENTILATION_LEVEL1   = (1360, Datatype.int8, Access.READ_ONLY)
-    SUNDAY_VENTILATION_LEVEL2   = (1361, Datatype.int8, Access.READ_ONLY)
-    SUNDAY_VENTILATION_LEVEL3   = (1362, Datatype.int8, Access.READ_ONLY)
+    SUNDAY_VENTILATION_LEVEL1   = (1360, Datatype.int16, Access.READ_ONLY)
+    SUNDAY_VENTILATION_LEVEL2   = (1361, Datatype.int16, Access.READ_ONLY)
+    SUNDAY_VENTILATION_LEVEL3   = (1362, Datatype.int16, Access.READ_ONLY)
 
 #
 # List of C6 Modbus registers
 #
-class C6(KomfoventRegister):
+class C6(Register):
     # Modbus registers - Basic Control
     REG_POWER = (1, Datatype.uint16, Access.READ_WRITE) # ON/OFF status
     REG_AUTO_MODE_CONTROL = (2, Datatype.uint16, Access.READ_WRITE) # Auto mode control
