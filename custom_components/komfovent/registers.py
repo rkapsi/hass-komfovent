@@ -17,15 +17,15 @@ class Access(Enum):
 #
 # The datatype of a Komfovent Modbus register
 class Datatype(IntEnum):
-    boolean = (0, 1)
+    binary  = (0, 1)
     int16   = (1, 1)
     uint16  = (2, 1)
     int32   = (3, 2)
     uint32  = (4, 2)
 
-    def __init__(self, value: int, count: int):
+    def __init__(self, value: int, size: int):
         self._value = value
-        self.count = count
+        self.size = size
 
 #
 # Base class for Kmfovent Modbus registers
@@ -48,9 +48,9 @@ class C4(Register):
     MONTH_DAY                   = (1004, Datatype.uint16, Access.READ_ONLY)
     YEAR                        = (1005, Datatype.int16, Access.READ_WRITE)
     MODBUS_ADDRESS              = (1006, Datatype.int16, Access.READ_WRITE)
-    ALARM_STATUS_WARNINGS       = (1007, Datatype.boolean, Access.READ_ONLY)
-    ALARM_STATUS_STOP_FLAGS     = (1008, Datatype.boolean, Access.READ_ONLY)
-    ALARM_STATUS_STOP_CODE      = (1009, Datatype.boolean, Access.READ_ONLY)
+    ALARM_STATUS_WARNINGS       = (1007, Datatype.binary, Access.READ_ONLY)
+    ALARM_STATUS_STOP_FLAGS     = (1008, Datatype.binary, Access.READ_ONLY)
+    ALARM_STATUS_STOP_CODE      = (1009, Datatype.binary, Access.READ_ONLY)
     RECUPERATOR_LEVEL           = (1010, Datatype.int16, Access.READ_ONLY)
     ELECTRIC_HEATER_LEVEL       = (1011, Datatype.int16, Access.READ_ONLY)
     WATER_HEATING_LEVEL         = (1012, Datatype.int16, Access.READ_ONLY)
@@ -74,7 +74,7 @@ class C4(Register):
     OVR_ENABLE                  = (1111, Datatype.int16, Access.READ_WRITE)
     OVR_TIME_SET                = (1112, Datatype.int16, Access.READ_WRITE)
     OVR_TIME_GET                = (1113, Datatype.int16, Access.READ_ONLY)
-    AHU_FAN_STATUS              = (1114, Datatype.boolean, Access.READ_ONLY)
+    AHU_FAN_STATUS              = (1114, Datatype.binary, Access.READ_ONLY)
     SUPPLY_FAN_LEVEL            = (1115, Datatype.int16, Access.READ_ONLY)
     EXHAUST_FAN_LEVEL           = (1116, Datatype.int16, Access.READ_ONLY)
 

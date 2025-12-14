@@ -49,18 +49,21 @@ class KomfoventModbusClient:
         self.client.close()
 
     async def read(self, register: Register) -> int:
-        """Read holding registers and return dict keyed by absolute register numbers."""
+        """Read holding register(s) and return value."""
         async with self._lock:
             
             result = await self.client.read_holding_registers(
-                address=register.address, count=register.datatype.count
+                address=register.address, count=register.datatype.size
             )
 
         if result.isError():
             msg = f"Error reading registers at {register}"
             raise ModbusException(msg)
 
-        if register.datatype == Datatype.uint16:
+        if register.datatype == Datatype.binary:
+            return 0 if result.registers[0] == 0 else 1
+        
+        elif register.datatype == Datatype.uint16:
             return result.registers[0]
         
         elif register.datatype == Datatype.int16:
@@ -72,20 +75,23 @@ class KomfoventModbusClient:
         raise NotImplementedError()
 
     async def write(self, register: Register, value: int) -> None:
-        """Write to holding register."""
+        """Write to holding register(s)."""
 
         if register.access == Access.READ_ONLY:
             raise ModbusException()
         
         async with self._lock:
-            if register.datatype == Datatype.uint16:
+            if register.datatype == Datatype.binary:
+                # Write 0 or 1
+                result = await self.client.write_register(register.address, 0 if value == 0 else 1)
+
+            elif register.datatype == Datatype.uint16:
                 # Write unsigned value as-is
                 result = await self.client.write_register(register.address, value)
 
             elif register.datatype == Datatype.int16:
                 # Convert signed value to 16-bit unsigned for Modbus
-                unsigned_value = value & 0xFFFF
-                result = await self.client.write_register(register.address, unsigned_value)
+                result = await self.client.write_register(register.address, value & 0xFFFF)
 
             elif register.datatype == Datatype.uint32:
                 # Split 32-bit value into two 16-bit values
