@@ -46,7 +46,6 @@ from .const import (
     FlowControl,
     FlowUnit,
 )
-from .registers import REG_ECO_MAX_TEMP, REG_ECO_MIN_TEMP
 
 AQ_INTENSITY_MIN = 20
 AQ_INTENSITY_MAX = 100
@@ -77,7 +76,7 @@ async def async_setup_entry(
     entities = [
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=REG_ECO_MIN_TEMP,
+            register_id=registers.C6.REG_ECO_MIN_TEMP,
             entity_description=NumberEntityDescription(
                 key="eco_min_supply_temperature",
                 name="ECO Min Supply Temperature",
@@ -90,7 +89,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=REG_ECO_MAX_TEMP,
+            register_id=registers.C6.REG_ECO_MAX_TEMP,
             entity_description=NumberEntityDescription(
                 key="eco_max_supply_temperature",
                 name="ECO Max Supply Temperature",
