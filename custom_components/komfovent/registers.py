@@ -5,9 +5,9 @@ This module contains the register addresses and register sets used for communica
 with Komfovent ventilation units via Modbus TCP.
 """
 
-from enum import Enum
 from __future__ import annotations
 import typing
+from enum import Enum
 
 #
 # The access mode of a Komfovent Modbus register
