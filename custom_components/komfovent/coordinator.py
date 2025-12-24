@@ -93,7 +93,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
 
             if True:
                 for register in registers.C4.POWER.sublist(5):
-                    data.update({register, await self.client.read(register)})
+                    data.update({register: await self.client.read(register)})
                 return data
 
             # Read primary control (1-34)
@@ -137,7 +137,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
             # This has not been tested yet, it may be implemented in the future
 
             for register in regs:
-                data.update({register, await self.client.read(register)})
+                data.update({register: await self.client.read(register)})
 
             # Read exhaust temperature (961)
             if (
@@ -145,13 +145,13 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 and self.func_version >= FUNC_VER_EXHAUST_TEMP
             ):
                 try:
-                    data.update({registers.C6.REG_EXHAUST_TEMP, await self.client.read(registers.C6.REG_EXHAUST_TEMP)})
+                    data.update({registers.C6.REG_EXHAUST_TEMP: await self.client.read(registers.C6.REG_EXHAUST_TEMP)})
                 except (ConnectionError, ModbusException) as error:
                     _LOGGER.debug("Failed to read exhaust temperature: %s", error)
 
             # Read controller firmware version (1000-1001)
             try:
-                data.update({registers.C6.REG_FIRMWARE, await self.client.read(registers.C6.REG_FIRMWARE)})
+                data.update({registers.C6.REG_FIRMWARE: await self.client.read(registers.C6.REG_FIRMWARE)})
             except (ConnectionError, ModbusException) as error:
                 _LOGGER.warning("Failed to read controller firmware version: %s", error)
 
@@ -161,7 +161,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 ConnectedPanels.BOTH,
             ]:
                 try:
-                    data.update({registers.C6.REG_PANEL1_FW, await self.client.read(registers.C6.REG_PANEL1_FW)})
+                    data.update({registers.C6.REG_PANEL1_FW: await self.client.read(registers.C6.REG_PANEL1_FW)})
                 except (ConnectionError, ModbusException) as error:
                     _LOGGER.warning(
                         "Failed to read panel 1 firmware version: %s", error
@@ -173,7 +173,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 ConnectedPanels.BOTH,
             ]:
                 try:
-                    data.update({registers.C6.REG_PANEL2_FW, await self.client.read(registers.C6.REG_PANEL2_FW)})
+                    data.update({registers.C6.REG_PANEL2_FW: await self.client.read(registers.C6.REG_PANEL2_FW)})
                 except (ConnectionError, ModbusException) as error:
                     _LOGGER.warning(
                         "Failed to read panel 2 firmware version: %s", error
