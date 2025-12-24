@@ -66,15 +66,15 @@ ABS_HUMIDITY_ERRORS = {65534, 65535}
 
 
 def create_aq_sensor(
-    coordinator: KomfoventCoordinator, register_id: int
+    coordinator: KomfoventCoordinator, register: registers.Register
 ) -> KomfoventSensor | None:
     """Create an air quality sensor if installed."""
     if not coordinator.data:
         return None
 
-    if register_id == registers.C6.REG_EXTRACT_AQ_1:
+    if register == registers.C6.REG_EXTRACT_AQ_1:
         sensor_type_int = coordinator.data.get(registers.C6.REG_AQ_SENSOR1_TYPE)
-    elif register_id == registers.C6.REG_EXTRACT_AQ_2:
+    elif register == registers.C6.REG_EXTRACT_AQ_2:
         sensor_type_int = coordinator.data.get(registers.C6.REG_AQ_SENSOR2_TYPE)
     else:
         sensor_type_int = AirQualitySensorType.NOT_INSTALLED
@@ -101,10 +101,10 @@ def create_aq_sensor(
             registers.C6.REG_AQ_OUTDOOR_HUMIDITY
         )
         is_outdoor = (
-            register_id == registers.C6.REG_EXTRACT_AQ_1
+            register == registers.C6.REG_EXTRACT_AQ_1
             and outdoor_humidity_sensor == OutdoorHumiditySensor.SENSOR1
         ) or (
-            register_id == registers.C6.REG_EXTRACT_AQ_2
+            register == registers.C6.REG_EXTRACT_AQ_2
             and outdoor_humidity_sensor == OutdoorHumiditySensor.SENSOR2
         )
 
@@ -123,7 +123,7 @@ def create_aq_sensor(
 
     return sensor_class(
         coordinator=coordinator,
-        register_id=register_id,
+        register_id=register,
         entity_description=SensorEntityDescription(
             key=key,
             name=name,
