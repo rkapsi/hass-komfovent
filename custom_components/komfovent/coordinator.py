@@ -91,6 +91,11 @@ class KomfoventCoordinator(DataUpdateCoordinator):
 
         try:
 
+            if True:
+                for register in registers.C4.POWER.sublist(5):
+                    data.update({register, await self.client.read(register)})
+                return data
+
             # Read primary control (1-34)
             regs = registers.C6.REG_POWER.sublist(34)
             
