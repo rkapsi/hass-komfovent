@@ -79,6 +79,9 @@ def create_aq_sensor(
     else:
         sensor_type_int = AirQualitySensorType.NOT_INSTALLED
 
+    if sensor_type_int == None:
+        sensor_type_int = AirQualitySensorType.NOT_INSTALLED
+        
     sensor_type = AirQualitySensorType(sensor_type_int)
 
     if sensor_type == AirQualitySensorType.NOT_INSTALLED:
@@ -691,10 +694,10 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         )
 
     # Add AQ sensors if installed
-    #if aq_sensor := create_aq_sensor(coordinator, registers.C6.REG_EXTRACT_AQ_1):
-    #    entities.append(aq_sensor)
-    #if aq_sensor := create_aq_sensor(coordinator, registers.C6.REG_EXTRACT_AQ_2):
-    #    entities.append(aq_sensor)
+    if aq_sensor := create_aq_sensor(coordinator, registers.C6.REG_EXTRACT_AQ_1):
+        entities.append(aq_sensor)
+    if aq_sensor := create_aq_sensor(coordinator, registers.C6.REG_EXTRACT_AQ_2):
+        entities.append(aq_sensor)
 
     return entities
 
