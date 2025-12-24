@@ -7,6 +7,7 @@ with Komfovent ventilation units via Modbus TCP.
 
 from enum import Enum, IntEnum
 from __future__ import annotations
+import typing
 
 #
 # The access mode of a Komfovent Modbus register
@@ -16,7 +17,7 @@ class Access(Enum):
 
 #
 # The datatype of a Komfovent Modbus register
-class Datatype(IntEnum):
+class Datatype(Enum):
     binary  = (0, 1)
     int16   = (1, 1)
     uint16  = (2, 1)
@@ -28,13 +29,28 @@ class Datatype(IntEnum):
         self.size = size
 
 #
-# Base class for Kmfovent Modbus registers
-class Register(IntEnum):
+# Base class for Komfovent Modbus registers
+class Register(Enum):
     def __init__(self, value: int, datatype: Datatype, access: Access):
         self._value = value
         self.address = value - 1
         self.datatype = datatype
         self.access = access
+
+    def range(self, count: int = 1) -> typing.List[Register]:
+        """Returns itself and every subsequent Register as a List"""
+
+        if count <= 0:
+            raise ValueError()
+        
+        elif count == 1:
+            return [ self ]
+        
+        registers = list(self)
+        index = registers.index(self)
+        
+        return registers[index:(index+count)]
+
 
 #
 # List of Komfovent C4 Modbus registers
