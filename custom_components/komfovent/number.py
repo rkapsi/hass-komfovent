@@ -76,7 +76,7 @@ async def async_setup_entry(
     entities = [
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_ECO_MIN_TEMP,
+            register_id=registers.C6.REG_ECO_MIN_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="eco_min_supply_temperature",
                 name="ECO Min Supply Temperature",
@@ -89,7 +89,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_ECO_MAX_TEMP,
+            register_id=registers.C6.REG_ECO_MAX_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="eco_max_supply_temperature",
                 name="ECO Max Supply Temperature",
@@ -102,7 +102,7 @@ async def async_setup_entry(
         ),
         KomfoventNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AQ_MIN_INTENSITY,
+            register_id=registers.C6.REG_AQ_MIN_INTENSITY.value,
             entity_description=NumberEntityDescription(
                 key="aq_minimum_intensity",
                 name="AQ Minimum Intensity",
@@ -115,7 +115,7 @@ async def async_setup_entry(
         ),
         KomfoventNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AQ_MAX_INTENSITY,
+            register_id=registers.C6.REG_AQ_MAX_INTENSITY.value,
             entity_description=NumberEntityDescription(
                 key="aq_maximum_intensity",
                 name="AQ Maximum Intensity",
@@ -128,7 +128,7 @@ async def async_setup_entry(
         ),
         KomfoventNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AQ_CHECK_PERIOD,
+            register_id=registers.C6.REG_AQ_CHECK_PERIOD.value,
             entity_description=NumberEntityDescription(
                 key="aq_check_period",
                 name="AQ Check Period",
@@ -142,7 +142,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AQ_TEMP_SETPOINT,
+            register_id=registers.C6.REG_AQ_TEMP_SETPOINT.value,
             entity_description=NumberEntityDescription(
                 key="aq_temperature_setpoint",
                 name="AQ Temperature Setpoint",
@@ -156,7 +156,7 @@ async def async_setup_entry(
         # Away mode controls
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AWAY_FAN_SUPPLY,
+            register_id=registers.C6.REG_AWAY_FAN_SUPPLY.value,
             entity_description=NumberEntityDescription(
                 key="away_supply_flow",
                 name="Away Supply Flow",
@@ -170,7 +170,7 @@ async def async_setup_entry(
         ),
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AWAY_FAN_EXTRACT,
+            register_id=registers.C6.REG_AWAY_FAN_EXTRACT.value,
             entity_description=NumberEntityDescription(
                 key="away_extract_flow",
                 name="Away Extract Flow",
@@ -184,7 +184,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AWAY_TEMP,
+            register_id=registers.C6.REG_AWAY_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="away_temperature",
                 name="Away Temperature",
@@ -201,7 +201,7 @@ async def async_setup_entry(
         # Normal mode controls
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_NORMAL_FAN_SUPPLY,
+            register_id=registers.C6.REG_NORMAL_FAN_SUPPLY.value,
             entity_description=NumberEntityDescription(
                 key="normal_supply_flow",
                 name="Normal Supply Flow",
@@ -215,7 +215,7 @@ async def async_setup_entry(
         ),
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_NORMAL_FAN_EXTRACT,
+            register_id=registers.C6.REG_NORMAL_FAN_EXTRACT.value,
             entity_description=NumberEntityDescription(
                 key="normal_extract_flow",
                 name="Normal Extract Flow",
@@ -229,7 +229,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_NORMAL_SETPOINT,
+            register_id=registers.C6.REG_NORMAL_SETPOINT.value,
             entity_description=NumberEntityDescription(
                 key="normal_temperature",
                 name="Normal Temperature",
@@ -246,7 +246,7 @@ async def async_setup_entry(
         # Intensive mode controls
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_INTENSIVE_FAN_SUPPLY,
+            register_id=registers.C6.REG_INTENSIVE_FAN_SUPPLY.value,
             entity_description=NumberEntityDescription(
                 key="intensive_supply_flow",
                 name="Intensive Supply Flow",
@@ -260,7 +260,7 @@ async def async_setup_entry(
         ),
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_INTENSIVE_FAN_EXTRACT,
+            register_id=registers.C6.REG_INTENSIVE_FAN_EXTRACT.value,
             entity_description=NumberEntityDescription(
                 key="intensive_extract_flow",
                 name="Intensive Extract Flow",
@@ -274,7 +274,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_INTENSIVE_TEMP,
+            register_id=registers.C6.REG_INTENSIVE_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="intensive_temperature",
                 name="Intensive Temperature",
@@ -291,7 +291,7 @@ async def async_setup_entry(
         # Boost mode controls
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_BOOST_FAN_SUPPLY,
+            register_id=registers.C6.REG_BOOST_FAN_SUPPLY.value,
             entity_description=NumberEntityDescription(
                 key="boost_supply_flow",
                 name="Boost Supply Flow",
@@ -305,7 +305,7 @@ async def async_setup_entry(
         ),
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_BOOST_FAN_EXTRACT,
+            register_id=registers.C6.REG_BOOST_FAN_EXTRACT.value,
             entity_description=NumberEntityDescription(
                 key="boost_extract_flow",
                 name="Boost Extract Flow",
@@ -319,7 +319,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_BOOST_TEMP,
+            register_id=registers.C6.REG_BOOST_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="boost_temperature",
                 name="Boost Temperature",
@@ -336,7 +336,7 @@ async def async_setup_entry(
         # Kitchen mode controls
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_KITCHEN_SUPPLY,
+            register_id=registers.C6.REG_KITCHEN_SUPPLY.value,
             entity_description=NumberEntityDescription(
                 key="kitchen_supply_flow",
                 name="Kitchen Supply Flow",
@@ -350,7 +350,7 @@ async def async_setup_entry(
         ),
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_KITCHEN_EXTRACT,
+            register_id=registers.C6.REG_KITCHEN_EXTRACT.value,
             entity_description=NumberEntityDescription(
                 key="kitchen_extract_flow",
                 name="Kitchen Extract Flow",
@@ -364,7 +364,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_KITCHEN_TEMP,
+            register_id=registers.C6.REG_KITCHEN_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="kitchen_temperature",
                 name="Kitchen Temperature",
@@ -380,7 +380,7 @@ async def async_setup_entry(
         ),
         KomfoventNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_KITCHEN_TIMER,
+            register_id=registers.C6.REG_KITCHEN_TIMER.value,
             entity_description=NumberEntityDescription(
                 key="kitchen_timer",
                 name="Kitchen Timer",
@@ -397,7 +397,7 @@ async def async_setup_entry(
         # Fireplace mode controls
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_FIREPLACE_SUPPLY,
+            register_id=registers.C6.REG_FIREPLACE_SUPPLY.value,
             entity_description=NumberEntityDescription(
                 key="fireplace_supply_flow",
                 name="Fireplace Supply Flow",
@@ -411,7 +411,7 @@ async def async_setup_entry(
         ),
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_FIREPLACE_EXTRACT,
+            register_id=registers.C6.REG_FIREPLACE_EXTRACT.value,
             entity_description=NumberEntityDescription(
                 key="fireplace_extract_flow",
                 name="Fireplace Extract Flow",
@@ -425,7 +425,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_FIREPLACE_TEMP,
+            register_id=registers.C6.REG_FIREPLACE_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="fireplace_temperature",
                 name="Fireplace Temperature",
@@ -441,7 +441,7 @@ async def async_setup_entry(
         ),
         KomfoventNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_FIREPLACE_TIMER,
+            register_id=registers.C6.REG_FIREPLACE_TIMER.value,
             entity_description=NumberEntityDescription(
                 key="fireplace_timer",
                 name="Fireplace Timer",
@@ -458,7 +458,7 @@ async def async_setup_entry(
         # Override mode controls
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_OVERRIDE_SUPPLY,
+            register_id=registers.C6.REG_OVERRIDE_SUPPLY.value,
             entity_description=NumberEntityDescription(
                 key="override_supply_flow",
                 name="Override Supply Flow",
@@ -472,7 +472,7 @@ async def async_setup_entry(
         ),
         FlowNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_OVERRIDE_EXTRACT,
+            register_id=registers.C6.REG_OVERRIDE_EXTRACT.value,
             entity_description=NumberEntityDescription(
                 key="override_extract_flow",
                 name="Override Extract Flow",
@@ -486,7 +486,7 @@ async def async_setup_entry(
         ),
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_OVERRIDE_TEMP,
+            register_id=registers.C6.REG_OVERRIDE_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="override_temperature",
                 name="Override Temperature",
@@ -502,7 +502,7 @@ async def async_setup_entry(
         ),
         KomfoventNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_OVERRIDE_TIMER,
+            register_id=registers.C6.REG_OVERRIDE_TIMER.value,
             entity_description=NumberEntityDescription(
                 key="override_timer",
                 name="Override Timer",
@@ -518,7 +518,7 @@ async def async_setup_entry(
         ),
         KomfoventNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_OVERRIDE_DELAY_START,
+            register_id=registers.C6.REG_OVERRIDE_DELAY_START.value,
             entity_description=NumberEntityDescription(
                 key="override_delay_start",
                 name="Override Delay Start",
@@ -534,7 +534,7 @@ async def async_setup_entry(
         ),
         KomfoventNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_OVERRIDE_DELAY_STOP,
+            register_id=registers.C6.REG_OVERRIDE_DELAY_STOP.value,
             entity_description=NumberEntityDescription(
                 key="override_delay_stop",
                 name="Override Delay Stop",
@@ -551,7 +551,7 @@ async def async_setup_entry(
         # Holiday mode controls
         TemperatureNumber(
             coordinator=coordinator,
-            register_id=registers.C6.REG_HOLIDAYS_TEMP,
+            register_id=registers.C6.REG_HOLIDAYS_TEMP.value,
             entity_description=NumberEntityDescription(
                 key="holidays_temperature",
                 name="Holidays Temperature",
@@ -576,7 +576,7 @@ async def async_setup_entry(
         entities.append(
             KomfoventNumber(
                 coordinator=coordinator,
-                register_id=registers.C6.REG_AQ_IMPURITY_SETPOINT,
+                register_id=registers.C6.REG_AQ_IMPURITY_SETPOINT.value,
                 entity_description=NumberEntityDescription(
                     key="aq_co2_setpoint",
                     name="AQ CO2 Setpoint",
@@ -593,7 +593,7 @@ async def async_setup_entry(
         entities.append(
             KomfoventNumber(
                 coordinator=coordinator,
-                register_id=registers.C6.REG_AQ_IMPURITY_SETPOINT,
+                register_id=registers.C6.REG_AQ_IMPURITY_SETPOINT.value,
                 entity_description=NumberEntityDescription(
                     key="aq_voc_setpoint",
                     name="AQ VOC Setpoint",
@@ -611,7 +611,7 @@ async def async_setup_entry(
         entities.append(
             KomfoventNumber(
                 coordinator=coordinator,
-                register_id=registers.C6.REG_AQ_HUMIDITY_SETPOINT,
+                register_id=registers.C6.REG_AQ_HUMIDITY_SETPOINT.value,
                 entity_description=NumberEntityDescription(
                     key="aq_humidity_setpoint",
                     name="AQ Humidity Setpoint",

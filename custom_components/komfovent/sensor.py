@@ -123,7 +123,7 @@ def create_aq_sensor(
 
     return sensor_class(
         coordinator=coordinator,
-        register_id=register,
+        register_id=register.value,
         entity_description=SensorEntityDescription(
             key=key,
             name=name,
