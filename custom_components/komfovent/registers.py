@@ -46,10 +46,12 @@ class Register(Enum):
         elif count == 1:
             return [ self ]
         
-        registers = list(self)
-        index = registers.index(self)
+        clazz = self.enum_member.__class__
+
+        enums = [element for element in clazz]
+        index = enums.index(self)
         
-        return registers[index:(index+count)]
+        return enums[index:(index+count)]
 
 
 #
