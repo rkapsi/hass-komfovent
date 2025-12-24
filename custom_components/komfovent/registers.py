@@ -5,7 +5,7 @@ This module contains the register addresses and register sets used for communica
 with Komfovent ventilation units via Modbus TCP.
 """
 
-from enum import Enum, IntEnum
+from enum import Enum
 from __future__ import annotations
 import typing
 
@@ -37,8 +37,8 @@ class Register(Enum):
         self.datatype = datatype
         self.access = access
 
-    def range(self, count: int = 1) -> typing.List[Register]:
-        """Returns itself and every subsequent Register as a List"""
+    def sublist(self, count: int = 1) -> typing.List[Register]:
+        """Returns a sublist of Registers starting with itself and every subsequent Register"""
 
         if count <= 0:
             raise ValueError()

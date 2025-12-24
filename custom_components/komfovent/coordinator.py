@@ -90,15 +90,16 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         data = {}
 
         try:
-            # Read primary control (1-34)
-            data.update(await self.client.read(registers.REG_POWER, 34))
 
+            # Read primary control (1-34)
+            regs = registers.C6.REG_POWER.sublist(34)
+            
             # Read connectivity, extra control (35-44)
             # This has not been tested yet, it may be implemented in the future
 
             # Read modes (100-158)
-            data.update(await self.client.read(registers.REG_AWAY_FAN_SUPPLY, 59))
-
+            regs += registers.C6.REG_AWAY_FAN_SUPPLY.sublist(59)
+                
             # Read humidity setpoints (159-162)
             # This has not been tested yet, it may be implemented in the future
 
@@ -107,15 +108,15 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 self.controller in {Controller.C6, Controller.C6M}
                 and self.func_version < FUNC_VER_AQ_HUMIDITY
             ):
-                data.update(await self.client.read(registers.REG_ECO_MIN_TEMP, 15))
+                regs += registers.C6.REG_ECO_MIN_TEMP.sublist(15)
             else:
-                data.update(await self.client.read(registers.REG_ECO_MIN_TEMP, 18))
+                regs += registers.C6.REG_ECO_MIN_TEMP.sublist(18)
 
             # Skip scheduler (300-555)
 
             # Read active alarms (600-610)
-            data.update(await self.client.read(registers.REG_ACTIVE_ALARMS_COUNT, 11))
-
+            regs += registers.C6.REG_ACTIVE_ALARMS_COUNT.sublist(11)
+                
             # Skip alarm history (611-861)
 
             # Read monitoring (900-957)
@@ -123,12 +124,15 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 self.controller in {Controller.C6, Controller.C6M}
                 and self.func_version < FUNC_VER_AQ_HUMIDITY
             ):
-                data.update(await self.client.read(registers.REG_STATUS, 56))
+                regs += registers.C6.REG_STATUS.sublist(56)
             else:
-                data.update(await self.client.read(registers.REG_STATUS, 58))
-
+                regs += registers.C6.REG_STATUS.sublist(58)
+            
             # Read digital outputs (958-960)
             # This has not been tested yet, it may be implemented in the future
+
+            for register in regs:
+                data.update({register, await self.client.read(register)})
 
             # Read exhaust temperature (961)
             if (
@@ -136,13 +140,13 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 and self.func_version >= FUNC_VER_EXHAUST_TEMP
             ):
                 try:
-                    data.update(await self.client.read(registers.REG_EXHAUST_TEMP, 1))
+                    data.update({registers.C6.REG_EXHAUST_TEMP, await self.client.read(registers.C6.REG_EXHAUST_TEMP)})
                 except (ConnectionError, ModbusException) as error:
                     _LOGGER.debug("Failed to read exhaust temperature: %s", error)
 
             # Read controller firmware version (1000-1001)
             try:
-                data.update(await self.client.read(registers.REG_FIRMWARE, 2))
+                data.update({registers.C6.REG_FIRMWARE, await self.client.read(registers.C6.REG_FIRMWARE)})
             except (ConnectionError, ModbusException) as error:
                 _LOGGER.warning("Failed to read controller firmware version: %s", error)
 
@@ -152,7 +156,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 ConnectedPanels.BOTH,
             ]:
                 try:
-                    data.update(await self.client.read(registers.REG_PANEL1_FW, 2))
+                    data.update({registers.C6.REG_PANEL1_FW, await self.client.read(registers.C6.REG_PANEL1_FW)})
                 except (ConnectionError, ModbusException) as error:
                     _LOGGER.warning(
                         "Failed to read panel 1 firmware version: %s", error
@@ -164,12 +168,11 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 ConnectedPanels.BOTH,
             ]:
                 try:
-                    data.update(await self.client.read(registers.REG_PANEL2_FW, 2))
+                    data.update({registers.C6.REG_PANEL2_FW, await self.client.read(registers.C6.REG_PANEL2_FW)})
                 except (ConnectionError, ModbusException) as error:
                     _LOGGER.warning(
                         "Failed to read panel 2 firmware version: %s", error
                     )
-
         except (ConnectionError, ModbusException) as error:
             _LOGGER.warning("Error communicating with Komfovent: %s", error)
             raise UpdateFailed from error
