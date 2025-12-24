@@ -32,7 +32,7 @@ class Datatype(Enum):
 # Base class for Komfovent Modbus registers
 class Register(Enum):
     def __init__(self, value: int, datatype: Datatype, access: Access):
-        self._value = value
+        super().__init__(self, value)
         self.address = value - 1
         self.datatype = datatype
         self.access = access
