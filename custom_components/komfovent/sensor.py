@@ -72,10 +72,10 @@ def create_aq_sensor(
     if not coordinator.data:
         return None
 
-    if register_id == registers.REG_EXTRACT_AQ_1:
-        sensor_type_int = coordinator.data.get(registers.REG_AQ_SENSOR1_TYPE)
-    elif register_id == registers.REG_EXTRACT_AQ_2:
-        sensor_type_int = coordinator.data.get(registers.REG_AQ_SENSOR2_TYPE)
+    if register_id == registers.C6.REG_EXTRACT_AQ_1:
+        sensor_type_int = coordinator.data.get(registers.C6.REG_AQ_SENSOR1_TYPE)
+    elif register_id == registers.C6.REG_EXTRACT_AQ_2:
+        sensor_type_int = coordinator.data.get(registers.C6.REG_AQ_SENSOR2_TYPE)
     else:
         sensor_type_int = AirQualitySensorType.NOT_INSTALLED
 
@@ -98,13 +98,13 @@ def create_aq_sensor(
         device_class = None
     elif sensor_type == AirQualitySensorType.HUMIDITY:
         outdoor_humidity_sensor = coordinator.data.get(
-            registers.REG_AQ_OUTDOOR_HUMIDITY
+            registers.C6.REG_AQ_OUTDOOR_HUMIDITY
         )
         is_outdoor = (
-            register_id == registers.REG_EXTRACT_AQ_1
+            register_id == registers.C6.REG_EXTRACT_AQ_1
             and outdoor_humidity_sensor == OutdoorHumiditySensor.SENSOR1
         ) or (
-            register_id == registers.REG_EXTRACT_AQ_2
+            register_id == registers.C6.REG_EXTRACT_AQ_2
             and outdoor_humidity_sensor == OutdoorHumiditySensor.SENSOR2
         )
 
@@ -144,7 +144,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         [
             TemperatureSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_SUPPLY_TEMP,
+                register_id=registers.C6.REG_SUPPLY_TEMP,
                 entity_description=SensorEntityDescription(
                     key="supply_temperature",
                     name="Supply Temperature",
@@ -156,7 +156,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             TemperatureSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_EXTRACT_TEMP,
+                register_id=registers.C6.REG_EXTRACT_TEMP,
                 entity_description=SensorEntityDescription(
                     key="extract_temperature",
                     name="Extract Temperature",
@@ -168,7 +168,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             TemperatureSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_OUTDOOR_TEMP,
+                register_id=registers.C6.REG_OUTDOOR_TEMP,
                 entity_description=SensorEntityDescription(
                     key="outdoor_temperature",
                     name="Outdoor Temperature",
@@ -180,7 +180,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             DutyCycleSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_SUPPLY_FAN,
+                register_id=registers.C6.REG_SUPPLY_FAN,
                 entity_description=SensorEntityDescription(
                     key="supply_fan",
                     name="Supply Fan",
@@ -191,7 +191,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             DutyCycleSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_EXTRACT_FAN,
+                register_id=registers.C6.REG_EXTRACT_FAN,
                 entity_description=SensorEntityDescription(
                     key="extract_fan",
                     name="Extract Fan",
@@ -202,7 +202,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             DutyCycleSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_HEAT_EXCHANGER,
+                register_id=registers.C6.REG_HEAT_EXCHANGER,
                 entity_description=SensorEntityDescription(
                     key="heat_exchanger",
                     name="Heat Exchanger",
@@ -213,7 +213,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             DutyCycleSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_ELECTRIC_HEATER,
+                register_id=registers.C6.REG_ELECTRIC_HEATER,
                 entity_description=SensorEntityDescription(
                     key="electric_heater",
                     name="Electric Heater",
@@ -224,7 +224,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             DutyCycleSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_WATER_HEATER,
+                register_id=registers.C6.REG_WATER_HEATER,
                 entity_description=SensorEntityDescription(
                     key="water_heater",
                     name="Water Heater",
@@ -236,7 +236,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             DutyCycleSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_WATER_COOLER,
+                register_id=registers.C6.REG_WATER_COOLER,
                 entity_description=SensorEntityDescription(
                     key="water_cooler",
                     name="Water Cooler",
@@ -248,7 +248,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             DutyCycleSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_DX_UNIT,
+                register_id=registers.C6.REG_DX_UNIT,
                 entity_description=SensorEntityDescription(
                     key="dx_unit",
                     name="DX Unit",
@@ -260,7 +260,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             KomfoventSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_FILTER_CLOGGING,
+                register_id=registers.C6.REG_FILTER_CLOGGING,
                 entity_description=SensorEntityDescription(
                     key="filter_clogging",
                     name="Filter Clogging",
@@ -271,7 +271,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             KomfoventSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_AIR_DAMPERS,
+                register_id=registers.C6.REG_AIR_DAMPERS,
                 entity_description=SensorEntityDescription(
                     key="air_dampers",
                     name="Air Dampers",
@@ -283,7 +283,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             KomfoventSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_POWER_CONSUMPTION,
+                register_id=registers.C6.REG_POWER_CONSUMPTION,
                 entity_description=SensorEntityDescription(
                     key="power_consumption",
                     name="Power Consumption",
@@ -295,7 +295,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             KomfoventSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_HEATER_POWER,
+                register_id=registers.C6.REG_HEATER_POWER,
                 entity_description=SensorEntityDescription(
                     key="heater_power",
                     name="Heater Power",
@@ -307,7 +307,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             KomfoventSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_HEAT_RECOVERY,
+                register_id=registers.C6.REG_HEAT_RECOVERY,
                 entity_description=SensorEntityDescription(
                     key="heat_recovery",
                     name="Heat Recovery",
@@ -319,7 +319,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             KomfoventSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_HEAT_EFFICIENCY,
+                register_id=registers.C6.REG_HEAT_EFFICIENCY,
                 entity_description=SensorEntityDescription(
                     key="heat_exchanger_efficiency",
                     name="Heat Exchanger Efficiency",
@@ -330,7 +330,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             KomfoventSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_ENERGY_SAVING,
+                register_id=registers.C6.REG_ENERGY_SAVING,
                 entity_description=SensorEntityDescription(
                     key="energy_saving",
                     name="Energy Saving",
@@ -342,7 +342,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             ConnectedPanelsSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_CONNECTED_PANELS,
+                register_id=registers.C6.REG_CONNECTED_PANELS,
                 entity_description=SensorEntityDescription(
                     key="connected_panels",
                     name="Connected Panels",
@@ -352,7 +352,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             HeatExchangerTypeSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_HEAT_EXCHANGER_TYPE,
+                register_id=registers.C6.REG_HEAT_EXCHANGER_TYPE,
                 entity_description=SensorEntityDescription(
                     key="heat_exchanger_type",
                     name="Heat Exchanger Type",
@@ -362,7 +362,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             FlowSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_MAX_SUPPLY_FLOW,
+                register_id=registers.C6.REG_MAX_SUPPLY_FLOW,
                 entity_description=SensorEntityDescription(
                     key="max_supply_flow",
                     name="Maximum Supply Flow",
@@ -374,7 +374,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             FlowSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_MAX_EXTRACT_FLOW,
+                register_id=registers.C6.REG_MAX_EXTRACT_FLOW,
                 entity_description=SensorEntityDescription(
                     key="max_extract_flow",
                     name="Maximum Extract Flow",
@@ -386,7 +386,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             FlowSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_SUPPLY_FLOW,
+                register_id=registers.C6.REG_SUPPLY_FLOW,
                 entity_description=SensorEntityDescription(
                     key="supply_flow",
                     name="Supply Flow",
@@ -396,7 +396,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             FlowSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_EXTRACT_FLOW,
+                register_id=registers.C6.REG_EXTRACT_FLOW,
                 entity_description=SensorEntityDescription(
                     key="extract_flow",
                     name="Extract Flow",
@@ -406,7 +406,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             FirmwareVersionSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_FIRMWARE,
+                register_id=registers.C6.REG_FIRMWARE,
                 entity_description=SensorEntityDescription(
                     key="controller_firmware",
                     name="Controller firmware",
@@ -415,7 +415,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             ),
             SystemTimeSensor(
                 coordinator=coordinator,
-                register_id=registers.REG_EPOCH_TIME,
+                register_id=registers.C6.REG_EPOCH_TIME,
                 entity_description=SensorEntityDescription(
                     key="system_time",
                     name="System Time",
@@ -433,7 +433,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             [
                 FlowUnitSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_FLOW_UNIT,
+                    register_id=registers.C6.REG_FLOW_UNIT,
                     entity_description=SensorEntityDescription(
                         key="flow_unit",
                         name="Flow Unit",
@@ -443,7 +443,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 SPISensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_SPI,
+                    register_id=registers.C6.REG_SPI,
                     entity_description=SensorEntityDescription(
                         key="specific_power_input",
                         name="Specific Power Input",
@@ -453,7 +453,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 FloatX1000Sensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_AHU_TOTAL,
+                    register_id=registers.C6.REG_AHU_TOTAL,
                     entity_description=SensorEntityDescription(
                         key="total_ahu_energy",
                         name="Total AHU Energy",
@@ -465,7 +465,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 FloatX1000Sensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_HEATER_TOTAL,
+                    register_id=registers.C6.REG_HEATER_TOTAL,
                     entity_description=SensorEntityDescription(
                         key="total_heater_energy",
                         name="Total Heater Energy",
@@ -477,7 +477,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 FloatX1000Sensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_RECOVERY_TOTAL,
+                    register_id=registers.C6.REG_RECOVERY_TOTAL,
                     entity_description=SensorEntityDescription(
                         key="total_recovered_energy",
                         name="Total Recovered Energy",
@@ -491,14 +491,14 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         )
 
     # Add pressure sensors if using a flow control mode is variable air volume
-    if coordinator.data and coordinator.data.get(registers.REG_FLOW_CONTROL) in [
+    if coordinator.data and coordinator.data.get(registers.C6.REG_FLOW_CONTROL) in [
         FlowControl.VARIABLE
     ]:
         entities.extend(
             [
                 KomfoventSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_MAX_SUPPLY_PRESSURE,
+                    register_id=registers.C6.REG_MAX_SUPPLY_PRESSURE,
                     entity_description=SensorEntityDescription(
                         key="max_supply_pressure",
                         name="Maximum Supply Pressure",
@@ -510,7 +510,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 KomfoventSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_MAX_EXTRACT_PRESSURE,
+                    register_id=registers.C6.REG_MAX_EXTRACT_PRESSURE,
                     entity_description=SensorEntityDescription(
                         key="max_extract_pressure",
                         name="Maximum Extract Pressure",
@@ -522,7 +522,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 KomfoventSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_SUPPLY_PRESSURE,
+                    register_id=registers.C6.REG_SUPPLY_PRESSURE,
                     entity_description=SensorEntityDescription(
                         key="supply_pressure",
                         name="Supply Pressure",
@@ -533,7 +533,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 KomfoventSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_EXTRACT_PRESSURE,
+                    register_id=registers.C6.REG_EXTRACT_PRESSURE,
                     entity_description=SensorEntityDescription(
                         key="extract_pressure",
                         name="Extract Pressure",
@@ -546,13 +546,13 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         )
 
     # Add indoor absolute humidity if value indicates sensor is present
-    indoor_humidity = coordinator.data.get(registers.REG_INDOOR_ABS_HUMIDITY)
+    indoor_humidity = coordinator.data.get(registers.C6.REG_INDOOR_ABS_HUMIDITY)
     if indoor_humidity is not None and indoor_humidity not in ABS_HUMIDITY_ERRORS:
         entities.extend(
             [
                 AbsoluteHumiditySensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_INDOOR_ABS_HUMIDITY,
+                    register_id=registers.C6.REG_INDOOR_ABS_HUMIDITY,
                     entity_description=SensorEntityDescription(
                         key="indoor_absolute_humidity",
                         name="Indoor Absolute Humidity",
@@ -566,13 +566,13 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         )
 
     # Add outdoor absolute humidity if value indicates sensor is present
-    outdoor_humidity = coordinator.data.get(registers.REG_OUTDOOR_ABS_HUMIDITY)
+    outdoor_humidity = coordinator.data.get(registers.C6.REG_OUTDOOR_ABS_HUMIDITY)
     if outdoor_humidity is not None and outdoor_humidity not in ABS_HUMIDITY_ERRORS:
         entities.extend(
             [
                 AbsoluteHumiditySensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_OUTDOOR_ABS_HUMIDITY,
+                    register_id=registers.C6.REG_OUTDOOR_ABS_HUMIDITY,
                     entity_description=SensorEntityDescription(
                         key="outdoor_absolute_humidity",
                         name="Outdoor Absolute Humidity",
@@ -586,12 +586,12 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         )
 
     # Add exhaust temperature if value is present
-    if coordinator.data and registers.REG_EXHAUST_TEMP in coordinator.data:
+    if coordinator.data and registers.C6.REG_EXHAUST_TEMP in coordinator.data:
         entities.extend(
             [
                 TemperatureSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_EXHAUST_TEMP,
+                    register_id=registers.C6.REG_EXHAUST_TEMP,
                     entity_description=SensorEntityDescription(
                         key="exhaust_temperature",
                         name="Exhaust Temperature",
@@ -605,7 +605,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         )
 
     # Add panel 1 sensors if panel is present
-    if coordinator.data and coordinator.data.get(registers.REG_CONNECTED_PANELS) in [
+    if coordinator.data and coordinator.data.get(registers.C6.REG_CONNECTED_PANELS) in [
         ConnectedPanels.PANEL1,
         ConnectedPanels.BOTH,
     ]:
@@ -613,7 +613,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             [
                 TemperatureSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_PANEL1_TEMP,
+                    register_id=registers.C6.REG_PANEL1_TEMP,
                     entity_description=SensorEntityDescription(
                         key="panel_1_temperature",
                         name="Panel 1 Temperature",
@@ -625,7 +625,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 RelativeHumiditySensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_PANEL1_RH,
+                    register_id=registers.C6.REG_PANEL1_RH,
                     entity_description=SensorEntityDescription(
                         key="panel_1_humidity",
                         name="Panel 1 Humidity",
@@ -637,7 +637,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 FirmwareVersionSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_PANEL1_FW,
+                    register_id=registers.C6.REG_PANEL1_FW,
                     entity_description=SensorEntityDescription(
                         key="panel_1_firmware",
                         name="Panel 1 firmware",
@@ -648,7 +648,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         )
 
     # Add panel 2 sensors if panel is present
-    if coordinator.data and coordinator.data.get(registers.REG_CONNECTED_PANELS) in [
+    if coordinator.data and coordinator.data.get(registers.C6.REG_CONNECTED_PANELS) in [
         ConnectedPanels.PANEL2,
         ConnectedPanels.BOTH,
     ]:
@@ -656,7 +656,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
             [
                 TemperatureSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_PANEL2_TEMP,
+                    register_id=registers.C6.REG_PANEL2_TEMP,
                     entity_description=SensorEntityDescription(
                         key="panel_2_temperature",
                         name="Panel 2 Temperature",
@@ -668,7 +668,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 RelativeHumiditySensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_PANEL2_RH,
+                    register_id=registers.C6.REG_PANEL2_RH,
                     entity_description=SensorEntityDescription(
                         key="panel_2_humidity",
                         name="Panel 2 Humidity",
@@ -680,7 +680,7 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
                 ),
                 FirmwareVersionSensor(
                     coordinator=coordinator,
-                    register_id=registers.REG_PANEL2_FW,
+                    register_id=registers.C6.REG_PANEL2_FW,
                     entity_description=SensorEntityDescription(
                         key="panel_2_firmware",
                         name="Panel 2 firmware",
@@ -691,9 +691,9 @@ async def create_sensors(coordinator: KomfoventCoordinator) -> list[KomfoventSen
         )
 
     # Add AQ sensors if installed
-    if aq_sensor := create_aq_sensor(coordinator, registers.REG_EXTRACT_AQ_1):
+    if aq_sensor := create_aq_sensor(coordinator, registers.C6.REG_EXTRACT_AQ_1):
         entities.append(aq_sensor)
-    if aq_sensor := create_aq_sensor(coordinator, registers.REG_EXTRACT_AQ_2):
+    if aq_sensor := create_aq_sensor(coordinator, registers.C6.REG_EXTRACT_AQ_2):
         entities.append(aq_sensor)
 
     return entities
@@ -931,11 +931,11 @@ class FlowSensor(FloatSensor):
             return None
 
         if self.coordinator.controller in {Controller.C6, Controller.C6M}:
-            flow_control = self.coordinator.data.get(registers.REG_FLOW_CONTROL)
+            flow_control = self.coordinator.data.get(registers.C6.REG_FLOW_CONTROL)
             if flow_control == FlowControl.OFF:
                 return PERCENTAGE
 
-            flow_unit = self.coordinator.data.get(registers.REG_FLOW_UNIT)
+            flow_unit = self.coordinator.data.get(registers.C6.REG_FLOW_UNIT)
             if flow_unit == FlowUnit.M3H:
                 return UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
             if flow_unit == FlowUnit.LS:

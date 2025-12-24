@@ -75,8 +75,8 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         error_msg = "Failed to read controller firmware version"
         try:
             # Get firmware version and extract functional version from it
-            fw_data = await self.client.read(registers.REG_FIRMWARE, 2)
-            fw_version = get_version_from_int(fw_data.get(registers.REG_FIRMWARE, 0))
+            fw_data = await self.client.read(registers.C6.REG_FIRMWARE)
+            fw_version = get_version_from_int(fw_data)
             self.controller = fw_version[0]
             self.func_version = fw_version[4]
         except (ConnectionError, ModbusException) as error:
@@ -151,7 +151,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                 _LOGGER.warning("Failed to read controller firmware version: %s", error)
 
             # Read panel 1 firmware version (1002-1003)
-            if data.get(registers.REG_CONNECTED_PANELS, 0) in [
+            if data.get(registers.C6.REG_CONNECTED_PANELS, 0) in [
                 ConnectedPanels.PANEL1,
                 ConnectedPanels.BOTH,
             ]:
@@ -163,7 +163,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
                     )
 
             # Read panel 2 firmware version (1004-1005)
-            if data.get(registers.REG_CONNECTED_PANELS, 0) in [
+            if data.get(registers.C6.REG_CONNECTED_PANELS, 0) in [
                 ConnectedPanels.PANEL2,
                 ConnectedPanels.BOTH,
             ]:

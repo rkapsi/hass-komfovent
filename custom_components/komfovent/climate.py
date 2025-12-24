@@ -79,7 +79,7 @@ class KomfoventClimate(CoordinatorEntity, ClimateEntity):
 
         try:
             temp_control = TemperatureControl(
-                self.coordinator.data.get(registers.REG_TEMP_CONTROL)
+                self.coordinator.data.get(registers.C6.REG_TEMP_CONTROL)
             )
             temp_key = TEMP_CONTROL_MAPPING[temp_control]
 
@@ -98,7 +98,7 @@ class KomfoventClimate(CoordinatorEntity, ClimateEntity):
 
         try:
             mode = OperationMode(
-                self.coordinator.data.get(registers.REG_OPERATION_MODE)
+                self.coordinator.data.get(registers.C6.REG_OPERATION_MODE)
             )
             temp_reg = MODE_TEMP_MAPPING[mode]
             if (temp := self.coordinator.data.get(temp_reg)) is not None:
@@ -114,7 +114,7 @@ class KomfoventClimate(CoordinatorEntity, ClimateEntity):
         if not self.coordinator.data:
             return None
 
-        power = self.coordinator.data.get(registers.REG_POWER)
+        power = self.coordinator.data.get(registers.C6.REG_POWER)
 
         if power is None:
             return None
@@ -129,7 +129,7 @@ class KomfoventClimate(CoordinatorEntity, ClimateEntity):
         if not self.coordinator.data:
             return None
 
-        mode = self.coordinator.data.get(registers.REG_OPERATION_MODE)
+        mode = self.coordinator.data.get(registers.C6.REG_OPERATION_MODE)
         try:
             return OperationMode(mode).name.lower()
         except ValueError:
@@ -143,12 +143,12 @@ class KomfoventClimate(CoordinatorEntity, ClimateEntity):
         # Get current mode and its temperature register
         try:
             mode = OperationMode(
-                self.coordinator.data.get(registers.REG_OPERATION_MODE)
+                self.coordinator.data.get(registers.C6.REG_OPERATION_MODE)
             )
             reg = MODE_TEMP_MAPPING[mode]
         except (ValueError, KeyError):
             _LOGGER.warning("Invalid operation mode, using normal setpoint")
-            reg = registers.REG_NORMAL_SETPOINT
+            reg = registers.C6.REG_NORMAL_SETPOINT
 
         # Convert temperature to device format (x10)
         # Ensure the value is within reasonable bounds
@@ -172,9 +172,9 @@ class KomfoventClimate(CoordinatorEntity, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set new target hvac mode."""
         if hvac_mode == HVACMode.OFF:
-            await self.coordinator.client.write(registers.REG_POWER, 0)
+            await self.coordinator.client.write(registers.C6.REG_POWER, 0)
         else:
-            await self.coordinator.client.write(registers.REG_POWER, 1)
+            await self.coordinator.client.write(registers.C6.REG_POWER, 1)
         await self.coordinator.async_request_refresh()
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
@@ -183,23 +183,23 @@ class KomfoventClimate(CoordinatorEntity, ClimateEntity):
 
 
 MODE_TEMP_MAPPING = {
-    OperationMode.STANDBY: registers.REG_NORMAL_SETPOINT,  # Use normal temp for standby
-    OperationMode.AWAY: registers.REG_AWAY_TEMP,
-    OperationMode.NORMAL: registers.REG_NORMAL_SETPOINT,
-    OperationMode.INTENSIVE: registers.REG_INTENSIVE_TEMP,
-    OperationMode.BOOST: registers.REG_BOOST_TEMP,
-    OperationMode.KITCHEN: registers.REG_KITCHEN_TEMP,
-    OperationMode.FIREPLACE: registers.REG_FIREPLACE_TEMP,
-    OperationMode.OVERRIDE: registers.REG_OVERRIDE_TEMP,
-    OperationMode.HOLIDAY: registers.REG_HOLIDAYS_TEMP,
-    OperationMode.AIR_QUALITY: registers.REG_AQ_TEMP_SETPOINT,
-    OperationMode.OFF: registers.REG_NORMAL_SETPOINT,  # Use normal temp when off
+    OperationMode.STANDBY: registers.C6.REG_NORMAL_SETPOINT,  # Use normal temp for standby
+    OperationMode.AWAY: registers.C6.REG_AWAY_TEMP,
+    OperationMode.NORMAL: registers.C6.REG_NORMAL_SETPOINT,
+    OperationMode.INTENSIVE: registers.C6.REG_INTENSIVE_TEMP,
+    OperationMode.BOOST: registers.C6.REG_BOOST_TEMP,
+    OperationMode.KITCHEN: registers.C6.REG_KITCHEN_TEMP,
+    OperationMode.FIREPLACE: registers.C6.REG_FIREPLACE_TEMP,
+    OperationMode.OVERRIDE: registers.C6.REG_OVERRIDE_TEMP,
+    OperationMode.HOLIDAY: registers.C6.REG_HOLIDAYS_TEMP,
+    OperationMode.AIR_QUALITY: registers.C6.REG_AQ_TEMP_SETPOINT,
+    OperationMode.OFF: registers.C6.REG_NORMAL_SETPOINT,  # Use normal temp when off
 }
 TEMP_CONTROL_MAPPING = {
-    TemperatureControl.SUPPLY: registers.REG_SUPPLY_TEMP,
-    TemperatureControl.EXTRACT: registers.REG_EXTRACT_TEMP,
+    TemperatureControl.SUPPLY: registers.C6.REG_SUPPLY_TEMP,
+    TemperatureControl.EXTRACT: registers.C6.REG_EXTRACT_TEMP,
     # Using panel1 temp for room temperature
-    TemperatureControl.ROOM: registers.REG_PANEL1_TEMP,
+    TemperatureControl.ROOM: registers.C6.REG_PANEL1_TEMP,
     # Using extract temp for balance mode
-    TemperatureControl.BALANCE: registers.REG_EXTRACT_TEMP,
+    TemperatureControl.BALANCE: registers.C6.REG_EXTRACT_TEMP,
 }

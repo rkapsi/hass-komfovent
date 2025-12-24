@@ -41,7 +41,7 @@ async def test_live_modbus_connection(hass: HomeAssistant, mock_registers):
         await client.connect()
 
         # Read some registers
-        data = await client.read(registers.REG_POWER, 34)
+        data = await client.read(registers.C6.REG_POWER, 34)
 
         # Verify we got data back
         assert data

@@ -32,7 +32,7 @@ def get_coordinator_for_device(
 
 async def clean_filters_calibration(coordinator: KomfoventCoordinator) -> None:
     """Reset filters counter."""
-    await coordinator.client.write(registers.REG_CLEAN_FILTERS, 1)
+    await coordinator.client.write(registers.C6.REG_CLEAN_FILTERS, 1)
 
 
 async def set_operation_mode(
@@ -46,9 +46,9 @@ async def set_operation_mode(
         return
 
     if operation_mode == OperationMode.OFF:
-        await coordinator.client.write(registers.REG_POWER, 0)
+        await coordinator.client.write(registers.C6.REG_POWER, 0)
     elif operation_mode == OperationMode.AIR_QUALITY:
-        await coordinator.client.write(registers.REG_AUTO_MODE, 1)
+        await coordinator.client.write(registers.C6.REG_AUTO_MODE, 1)
     elif operation_mode in {
         OperationMode.AWAY,
         OperationMode.NORMAL,
@@ -56,27 +56,27 @@ async def set_operation_mode(
         OperationMode.BOOST,
     }:
         await coordinator.client.write(
-            registers.REG_OPERATION_MODE, operation_mode.value
+            registers.C6.REG_OPERATION_MODE, operation_mode.value
         )
     elif operation_mode == OperationMode.KITCHEN:
         await coordinator.client.write(
-            registers.REG_KITCHEN_TIMER,
+            registers.C6.REG_KITCHEN_TIMER,
             minutes
-            or coordinator.data.get(registers.REG_KITCHEN_TIMER)
+            or coordinator.data.get(registers.C6.REG_KITCHEN_TIMER)
             or DEFAULT_MODE_TIMER,
         )
     elif operation_mode == OperationMode.FIREPLACE:
         await coordinator.client.write(
-            registers.REG_FIREPLACE_TIMER,
+            registers.C6.REG_FIREPLACE_TIMER,
             minutes
-            or coordinator.data.get(registers.REG_FIREPLACE_TIMER)
+            or coordinator.data.get(registers.C6.REG_FIREPLACE_TIMER)
             or DEFAULT_MODE_TIMER,
         )
     elif operation_mode == OperationMode.OVERRIDE:
         await coordinator.client.write(
-            registers.REG_OVERRIDE_TIMER,
+            registers.C6.REG_OVERRIDE_TIMER,
             minutes
-            or coordinator.data.get(registers.REG_OVERRIDE_TIMER)
+            or coordinator.data.get(registers.C6.REG_OVERRIDE_TIMER)
             or DEFAULT_MODE_TIMER,
         )
     else:
@@ -100,7 +100,7 @@ async def set_system_time(coordinator: KomfoventCoordinator) -> None:
     local_time = int((datetime.now(tz=local_tz) - local_epoch).total_seconds())
 
     # Write local time to the Komfovent unit
-    await coordinator.client.write(registers.REG_EPOCH_TIME, local_time)
+    await coordinator.client.write(registers.C6.REG_EPOCH_TIME, local_time)
 
 
 async def async_register_services(hass: HomeAssistant) -> None:
