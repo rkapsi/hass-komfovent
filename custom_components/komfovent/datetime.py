@@ -33,7 +33,7 @@ async def async_setup_entry(
         [
             KomfoventDateTime(
                 coordinator=coordinator,
-                register_id=registers.C6.REG_HOLIDAYS_FROM.value,
+                register=registers.C6.REG_HOLIDAYS_FROM,
                 entity_description=DateTimeEntityDescription(
                     key="holidays_from",
                     name="Holidays From",
@@ -44,7 +44,7 @@ async def async_setup_entry(
             ),
             KomfoventDateTime(
                 coordinator=coordinator,
-                register_id=registers.C6.REG_HOLIDAYS_UNTIL.value,
+                register=registers.C6.REG_HOLIDAYS_UNTIL,
                 entity_description=DateTimeEntityDescription(
                     key="holidays_until",
                     name="Holidays Until",
@@ -65,12 +65,12 @@ class KomfoventDateTime(CoordinatorEntity, DateTimeEntity):
     def __init__(
         self,
         coordinator: KomfoventCoordinator,
-        register_id: int,
+        register: registers.Register,
         entity_description: DateTimeEntityDescription,
     ) -> None:
         """Initialize the datetime entity."""
         super().__init__(coordinator)
-        self.register_id = register_id
+        self.register = register
         self.entity_description = entity_description
         self._attr_unique_id = (
             f"{coordinator.config_entry.entry_id}_{entity_description.key}"
@@ -88,7 +88,7 @@ class KomfoventDateTime(CoordinatorEntity, DateTimeEntity):
         if not self.coordinator.data:
             return None
 
-        value = self.coordinator.data.get(self.register_id)
+        value = self.coordinator.data.get(self.register)
         if value is None:
             return None
 
@@ -116,5 +116,5 @@ class KomfoventDateTime(CoordinatorEntity, DateTimeEntity):
         seconds = int((value - local_epoch).total_seconds())
 
         # Write value to register
-        await self.coordinator.client.write(self.register_id, seconds)
+        await self.coordinator.client.write(self.register, seconds)
         await self.coordinator.async_request_refresh()

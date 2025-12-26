@@ -49,7 +49,7 @@ async def async_setup_entry(
     entities = [
         KomfoventOperationModeSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_OPERATION_MODE.value,
+            register=registers.C6.REG_OPERATION_MODE,
             enum_class=OperationMode,
             entity_description=SelectEntityDescription(
                 key="operation_mode",
@@ -60,7 +60,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_SCHEDULER_MODE.value,
+            register=registers.C6.REG_SCHEDULER_MODE,
             enum_class=SchedulerMode,
             entity_description=SelectEntityDescription(
                 key="scheduler_mode",
@@ -70,7 +70,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_TEMP_CONTROL.value,
+            register=registers.C6.REG_TEMP_CONTROL,
             enum_class=TemperatureControl,
             entity_description=SelectEntityDescription(
                 key="temperature_control",
@@ -82,7 +82,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AQ_SENSOR1_TYPE.value,
+            register=registers.C6.REG_AQ_SENSOR1_TYPE,
             enum_class=AirQualitySensorType,
             entity_description=SelectEntityDescription(
                 key="aq_sensor1_type",
@@ -94,7 +94,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_AQ_OUTDOOR_HUMIDITY.value,
+            register=registers.C6.REG_AQ_OUTDOOR_HUMIDITY,
             enum_class=OutdoorHumiditySensor,
             entity_description=SelectEntityDescription(
                 key="aq_outdoor_humidity_sensor",
@@ -107,7 +107,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_ECO_HEAT_RECOVERY.value,
+            register=registers.C6.REG_ECO_HEAT_RECOVERY,
             enum_class=HeatRecoveryControl,
             entity_description=SelectEntityDescription(
                 key="eco_heat_recovery",
@@ -118,7 +118,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_OVERRIDE_ACTIVATION.value,
+            register=registers.C6.REG_OVERRIDE_ACTIVATION,
             enum_class=OverrideActivation,
             entity_description=SelectEntityDescription(
                 key="override_activation",
@@ -131,7 +131,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_HOLIDAYS_MICRO_VENT.value,
+            register=registers.C6.REG_HOLIDAYS_MICRO_VENT,
             enum_class=MicroVentilation,
             entity_description=SelectEntityDescription(
                 key="holidays_micro_ventilation",
@@ -144,7 +144,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STAGE1.value,
+            register=registers.C6.REG_STAGE1,
             enum_class=ControlStage,
             entity_description=SelectEntityDescription(
                 key="control_stage_1",
@@ -156,7 +156,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STAGE2.value,
+            register=registers.C6.REG_STAGE2,
             enum_class=ControlStage,
             entity_description=SelectEntityDescription(
                 key="control_stage_2",
@@ -168,7 +168,7 @@ async def async_setup_entry(
         ),
         KomfoventSelect(
             coordinator=coordinator,
-            register_id=registers.C6.REG_EXTERNAL_COIL_TYPE.value,
+            register=registers.C6.REG_EXTERNAL_COIL_TYPE,
             enum_class=CoilType,
             entity_description=SelectEntityDescription(
                 key="external_coil_type",
@@ -186,7 +186,7 @@ async def async_setup_entry(
             [
                 KomfoventSelect(
                     coordinator=coordinator,
-                    register_id=registers.C6.REG_FLOW_CONTROL.value,
+                    register=registers.C6.REG_FLOW_CONTROL,
                     enum_class=FlowControl,
                     entity_description=SelectEntityDescription(
                         key="flow_control",
@@ -198,7 +198,7 @@ async def async_setup_entry(
                 ),
                 KomfoventSelect(
                     coordinator=coordinator,
-                    register_id=registers.C6.REG_AQ_SENSOR2_TYPE.value,
+                    register=registers.C6.REG_AQ_SENSOR2_TYPE,
                     enum_class=AirQualitySensorType,
                     entity_description=SelectEntityDescription(
                         key="aq_sensor2_type",
@@ -210,7 +210,7 @@ async def async_setup_entry(
                 ),
                 KomfoventSelect(
                     coordinator=coordinator,
-                    register_id=registers.C6.REG_STAGE3.value,
+                    register=registers.C6.REG_STAGE3,
                     enum_class=ControlStage,
                     entity_description=SelectEntityDescription(
                         key="control_stage_3",
@@ -234,13 +234,13 @@ class KomfoventSelect(CoordinatorEntity, SelectEntity):
     def __init__(
         self,
         coordinator: KomfoventCoordinator,
-        register_id: int,
+        register: registers.Register,
         enum_class: type[IntEnum],
         entity_description: SelectEntityDescription,
     ) -> None:
         """Initialize the select entity."""
         super().__init__(coordinator)
-        self.register_id = register_id
+        self.register = register
         self.enum_class = enum_class
         self.entity_description = entity_description
         self._attr_unique_id = (
@@ -259,7 +259,7 @@ class KomfoventSelect(CoordinatorEntity, SelectEntity):
         if not self.coordinator.data:
             return None
 
-        mode = self.coordinator.data.get(self.register_id)
+        mode = self.coordinator.data.get(self.register)
         try:
             return self.enum_class(mode).name.lower()
         except ValueError:
@@ -273,7 +273,7 @@ class KomfoventSelect(CoordinatorEntity, SelectEntity):
             _LOGGER.warning("Invalid operation mode: %s", option)
             return
 
-        await self.coordinator.client.write(self.register_id, mode.value)
+        await self.coordinator.client.write(self.register, mode.value)
 
         await self.coordinator.async_request_refresh()
 

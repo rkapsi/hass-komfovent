@@ -44,7 +44,7 @@ async def create_binary_sensors(
     return [
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_STARTING,
             entity_description=BinarySensorEntityDescription(
                 key="status_starting",
@@ -54,7 +54,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_STOPPING,
             entity_description=BinarySensorEntityDescription(
                 key="status_stopping",
@@ -64,7 +64,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_FAN,
             entity_description=BinarySensorEntityDescription(
                 key="status_fan",
@@ -75,7 +75,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_ROTOR,
             entity_description=BinarySensorEntityDescription(
                 key="status_rotor",
@@ -86,7 +86,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_HEATING,
             entity_description=BinarySensorEntityDescription(
                 key="status_heating",
@@ -97,7 +97,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_COOLING,
             entity_description=BinarySensorEntityDescription(
                 key="status_cooling",
@@ -108,7 +108,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_HEATING_DENIED,
             entity_description=BinarySensorEntityDescription(
                 key="status_heating_denied",
@@ -118,7 +118,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_COOLING_DENIED,
             entity_description=BinarySensorEntityDescription(
                 key="status_cooling_denied",
@@ -128,7 +128,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_FLOW_DOWN,
             entity_description=BinarySensorEntityDescription(
                 key="status_flow_down",
@@ -138,7 +138,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_FREE_HEATING,
             entity_description=BinarySensorEntityDescription(
                 key="status_free_heating",
@@ -149,7 +149,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_FREE_COOLING,
             entity_description=BinarySensorEntityDescription(
                 key="status_free_cooling",
@@ -160,7 +160,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_ALARM_F,
             entity_description=BinarySensorEntityDescription(
                 key="status_alarm_fault",
@@ -170,7 +170,7 @@ async def create_binary_sensors(
         ),
         KomfoventStatusBinarySensor(
             coordinator=coordinator,
-            register_id=registers.C6.REG_STATUS.value,
+            register=registers.C6.REG_STATUS,
             bitmask=BITMASK_ALARM_W,
             entity_description=BinarySensorEntityDescription(
                 key="status_alarm_warning",
@@ -199,12 +199,12 @@ class KomfoventBinarySensor(CoordinatorEntity, BinarySensorEntity):
     def __init__(
         self,
         coordinator: KomfoventCoordinator,
-        register_id: int,
+        register: registers.Register,
         entity_description: BinarySensorEntityDescription,
     ) -> None:
         """Initialize the binary sensor."""
         super().__init__(coordinator)
-        self.register_id = register_id
+        self.register = register
         self.entity_description = entity_description
         self._attr_unique_id = (
             f"{coordinator.config_entry.entry_id}_{entity_description.key}"
@@ -221,7 +221,7 @@ class KomfoventBinarySensor(CoordinatorEntity, BinarySensorEntity):
         """Return true if the binary sensor is on."""
         if not self.coordinator.data:
             return None
-        value = self.coordinator.data.get(self.register_id)
+        value = self.coordinator.data.get(self.register)
         if value is None:
             return None
         return bool(value)
@@ -233,12 +233,12 @@ class KomfoventStatusBinarySensor(KomfoventBinarySensor):
     def __init__(
         self,
         coordinator: KomfoventCoordinator,
-        register_id: int,
+        register: registers.Register,
         bitmask: int,
         entity_description: BinarySensorEntityDescription,
     ) -> None:
         """Initialize the binary sensor."""
-        super().__init__(coordinator, register_id, entity_description)
+        super().__init__(coordinator, register, entity_description)
         self.bitmask = bitmask
 
     @property
@@ -246,7 +246,7 @@ class KomfoventStatusBinarySensor(KomfoventBinarySensor):
         """Return true if the binary sensor is on."""
         if not self.coordinator.data:
             return None
-        value = self.coordinator.data.get(self.register_id)
+        value = self.coordinator.data.get(self.register)
         if value is None:
             return None
         return bool(value & self.bitmask)
