@@ -73,15 +73,12 @@ def create_aq_sensor(
         return None
 
     if register == registers.C6.REG_EXTRACT_AQ_1:
-        sensor_type_int = coordinator.data.get(registers.C6.REG_AQ_SENSOR1_TYPE)
+        sensor_type_int = coordinator.data.get(registers.C6.REG_AQ_SENSOR1_TYPE, AirQualitySensorType.NOT_INSTALLED)
     elif register == registers.C6.REG_EXTRACT_AQ_2:
-        sensor_type_int = coordinator.data.get(registers.C6.REG_AQ_SENSOR2_TYPE)
+        sensor_type_int = coordinator.data.get(registers.C6.REG_AQ_SENSOR2_TYPE, AirQualitySensorType.NOT_INSTALLED)
     else:
         sensor_type_int = AirQualitySensorType.NOT_INSTALLED
 
-    if sensor_type_int == None:
-        sensor_type_int = AirQualitySensorType.NOT_INSTALLED
-        
     sensor_type = AirQualitySensorType(sensor_type_int)
 
     if sensor_type == AirQualitySensorType.NOT_INSTALLED:
