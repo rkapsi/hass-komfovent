@@ -92,7 +92,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         try:
 
             if True:
-                for register in registers.C4.POWER.sublist(5):
+                for register in registers.C4.POWER.sublist(2):
                     data.update({register: await self.client.read(register)})
                 return data
 
