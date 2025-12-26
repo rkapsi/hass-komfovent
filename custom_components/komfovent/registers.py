@@ -24,18 +24,21 @@ class Datatype(Enum):
     int32   = (3, 2)
     uint32  = (4, 2)
 
-    def __init__(self, value: int, size: int):
-        self._value = value
-        self.size = size
+    def __new__(cls, value: int, size: int):
+        obj = object.__new__(cls)
+        obj._value_ = value
+        obj.size = size
+        return obj
 
 #
 # Base class for Komfovent Modbus registers
 class Register(Enum):
-    def __init__(self, value: int, datatype: Datatype, access: Access):
-        super().__init__(self, value)
-        self.address = value - 1
-        self.datatype = datatype
-        self.access = access
+    def __new__(cls, value: int, datatype: Datatype, access: Access):
+        obj = object.__new__(cls)
+        obj._value_ = value
+        obj.datatype = datatype
+        obj.access = access
+        return obj
 
     def sublist(self, count: int = 1) -> typing.List[Register]:
         """Returns a sublist of Registers starting with itself and every subsequent Register"""
