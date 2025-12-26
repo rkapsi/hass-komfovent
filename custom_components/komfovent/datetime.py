@@ -33,7 +33,7 @@ async def async_setup_entry(
         [
             KomfoventDateTime(
                 coordinator=coordinator,
-                register_id=registers.C6.REG_HOLIDAYS_FROM,
+                register_id=registers.C6.REG_HOLIDAYS_FROM.value,
                 entity_description=DateTimeEntityDescription(
                     key="holidays_from",
                     name="Holidays From",
@@ -44,7 +44,7 @@ async def async_setup_entry(
             ),
             KomfoventDateTime(
                 coordinator=coordinator,
-                register_id=registers.C6.REG_HOLIDAYS_UNTIL,
+                register_id=registers.C6.REG_HOLIDAYS_UNTIL.value,
                 entity_description=DateTimeEntityDescription(
                     key="holidays_until",
                     name="Holidays Until",
