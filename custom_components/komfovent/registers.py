@@ -36,6 +36,7 @@ class Register(Enum):
     def __new__(cls, value: int, datatype: Datatype, access: Access):
         obj = object.__new__(cls)
         obj._value_ = value
+        obj.address = value - 1
         obj.datatype = datatype
         obj.access = access
         return obj
