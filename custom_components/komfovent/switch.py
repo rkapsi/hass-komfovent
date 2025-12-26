@@ -24,7 +24,8 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
     return [
         KomfoventSwitch(
             coordinator=coordinator,
-            register=registers.C6.REG_POWER,
+            #register=registers.C6.REG_POWER,
+            register=registers.C4.POWER,
             entity_description=SwitchEntityDescription(
                 key="power",
                 name="Power",
