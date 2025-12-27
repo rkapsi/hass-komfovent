@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from .coordinator import KomfoventCoordinator
 
 from . import registers
-from .const import DOMAIN
+from .const import DOMAIN, Controller
 
 # Status bitmask values
 BITMASK_STARTING: Final = 1 << 0  # 1
@@ -36,10 +36,10 @@ BITMASK_FREE_COOLING: Final = 1 << 10  # 1024
 BITMASK_ALARM_F: Final = 1 << 11  # 2048
 BITMASK_ALARM_W: Final = 1 << 12  # 4096
 
-
-async def create_binary_sensors(
-    coordinator: KomfoventCoordinator,
-) -> list[KomfoventBinarySensor]:
+def _create_binary_sensors_C4(coordinator: KomfoventCoordinator,) -> list[KomfoventBinarySensor]:
+    return []
+    
+def _create_binary_sensors_C6(coordinator: KomfoventCoordinator,) -> list[KomfoventBinarySensor]:
     """Get list of binary sensor entities."""
     return [
         KomfoventStatusBinarySensor(
@@ -180,7 +180,14 @@ async def create_binary_sensors(
         ),
     ]
 
+async def create_binary_sensors(coordinator: KomfoventCoordinator,) -> list[KomfoventBinarySensor]:
+    """Create switch entities for Komfovent device."""
 
+    if coordinator.controller == Controller.C4:
+        return _create_binary_sensors_C4(coordinator)
+    else:
+        return _create_binary_sensors_C6(coordinator)
+    
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,

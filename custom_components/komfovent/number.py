@@ -57,14 +57,11 @@ CO2_MAX = 2000
 VOC_MIN = 0
 VOC_MAX = 100
 
+def _create_numbers_C4(coordinator: KomfoventCoordinator) -> list[TemperatureNumber]:
+    return []
 
-async def async_setup_entry(
-    hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
-) -> None:
-    """Set up Komfovent number entities."""
-    coordinator: KomfoventCoordinator = hass.data[DOMAIN][entry.entry_id]
+
+def _create_numbers_C6(coordinator: KomfoventCoordinator, entry: ConfigEntry) -> list[TemperatureNumber]:
 
     step_temperature = entry.options.get(OPT_STEP_TEMPERATURE, DEFAULT_STEP_TEMPERATURE)
     step_flow = entry.options.get(OPT_STEP_FLOW, DEFAULT_STEP_FLOW)
@@ -624,7 +621,25 @@ async def async_setup_entry(
             ),
         )
 
-    async_add_entities(entities)
+    return entities
+
+async def create_numbers(coordinator: KomfoventCoordinator, entry: ConfigEntry) -> list[TemperatureNumber]:
+    """Create numbers entities for Komfovent device."""
+
+    if coordinator.controller == Controller.C4:
+        return _create_numbers_C4(coordinator)
+    else:
+        return _create_numbers_C6(coordinator)
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up Komfovent number entities."""
+    coordinator: KomfoventCoordinator = hass.data[DOMAIN][entry.entry_id]
+
+    async_add_entities(await create_numbers(coordinator, entry))
 
 
 class KomfoventNumber(CoordinatorEntity, NumberEntity):

@@ -18,8 +18,48 @@ if TYPE_CHECKING:
     from .coordinator import KomfoventCoordinator
 
 from . import registers
-from .const import DOMAIN
+from .const import DOMAIN, Controller
 
+
+def _create_datetime_C4(coordinator: KomfoventCoordinator) -> list[KomfoventDateTime]:
+    return []
+
+
+def _create_datetime_C6(coordinator: KomfoventCoordinator) -> list[KomfoventDateTime]:
+    return [
+        KomfoventDateTime(
+            coordinator=coordinator,
+            register=registers.C6.REG_HOLIDAYS_FROM,
+            entity_description=DateTimeEntityDescription(
+                key="holidays_from",
+                name="Holidays From",
+                entity_registry_enabled_default=True,
+                entity_registry_visible_default=False,
+                entity_category=EntityCategory.CONFIG,
+            ),
+        ),
+        KomfoventDateTime(
+            coordinator=coordinator,
+            register=registers.C6.REG_HOLIDAYS_UNTIL,
+            entity_description=DateTimeEntityDescription(
+                key="holidays_until",
+                name="Holidays Until",
+                entity_registry_enabled_default=True,
+                entity_registry_visible_default=False,
+                entity_category=EntityCategory.CONFIG,
+            ),
+        ),
+    ]
+
+
+async def create_datetime(coordinator: KomfoventCoordinator,) -> list[KomfoventDateTime]:
+    """Create datetime entities for Komfovent device."""
+
+    if coordinator.controller == Controller.C4:
+        return _create_datetime_C4(coordinator)
+    else:
+        return _create_datetime_C6(coordinator)
+    
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -28,33 +68,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up Komfovent datetime entities."""
     coordinator: KomfoventCoordinator = hass.data[DOMAIN][entry.entry_id]
-
-    async_add_entities(
-        [
-            KomfoventDateTime(
-                coordinator=coordinator,
-                register=registers.C6.REG_HOLIDAYS_FROM,
-                entity_description=DateTimeEntityDescription(
-                    key="holidays_from",
-                    name="Holidays From",
-                    entity_registry_enabled_default=True,
-                    entity_registry_visible_default=False,
-                    entity_category=EntityCategory.CONFIG,
-                ),
-            ),
-            KomfoventDateTime(
-                coordinator=coordinator,
-                register=registers.C6.REG_HOLIDAYS_UNTIL,
-                entity_description=DateTimeEntityDescription(
-                    key="holidays_until",
-                    name="Holidays Until",
-                    entity_registry_enabled_default=True,
-                    entity_registry_visible_default=False,
-                    entity_category=EntityCategory.CONFIG,
-                ),
-            ),
-        ]
-    )
+    async_add_entities(await create_datetime(coordinator))
 
 
 class KomfoventDateTime(CoordinatorEntity, DateTimeEntity):

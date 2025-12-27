@@ -39,13 +39,10 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(
-    hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
-) -> None:
-    """Set up Komfovent select entities."""
-    coordinator: KomfoventCoordinator = hass.data[DOMAIN][entry.entry_id]
+def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSelect]:
+    return []
+
+def _create_selectors_C6(coordinator: KomfoventCoordinator) -> list[KomfoventSelect]:
     entities = [
         KomfoventOperationModeSelect(
             coordinator=coordinator,
@@ -223,7 +220,24 @@ async def async_setup_entry(
             ]
         )
 
-    async_add_entities(entities)
+        return entities
+
+async def create_selectors(coordinator: KomfoventCoordinator) -> list[KomfoventSelect]:
+    """Create a list of selector entities."""
+    if coordinator.controller == Controller.C4:
+        return _create_selectors_C4(coordinator)
+    else:
+        return _create_selectors_C6(coordinator)
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up Komfovent select entities."""
+    coordinator: KomfoventCoordinator = hass.data[DOMAIN][entry.entry_id]
+    
+    async_add_entities(await create_selectors(coordinator))
 
 
 class KomfoventSelect(CoordinatorEntity, SelectEntity):
