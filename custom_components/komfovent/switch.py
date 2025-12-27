@@ -16,16 +16,30 @@ if TYPE_CHECKING:
     from .coordinator import KomfoventCoordinator
 
 from . import registers
-from .const import DOMAIN
+from .const import DOMAIN, Controller
 
-
-async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
+def _create_switches_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
     """Create switch entities for Komfovent device."""
     return [
         KomfoventSwitch(
             coordinator=coordinator,
-            #register=registers.C6.REG_POWER,
             register=registers.C4.POWER,
+            entity_description=SwitchEntityDescription(
+                key="power",
+                name="Power",
+                icon="mdi:power",
+                entity_registry_enabled_default=True,
+                entity_category=None,
+            ),
+        ),
+    ]
+
+def _create_switches_C6(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
+    """Create switch entities for Komfovent device."""
+    return [
+        KomfoventSwitch(
+            coordinator=coordinator,
+            register=registers.C6.REG_POWER,
             entity_description=SwitchEntityDescription(
                 key="power",
                 name="Power",
@@ -218,6 +232,14 @@ async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSw
             ),
         ),
     ]
+
+async def create_switches(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
+    """Create switch entities for Komfovent device."""
+
+    if coordinator.controller == Controller.C4:
+        return _create_switches_C4(coordinator)
+    else:
+        return _create_switches_C6(coordinator)
 
 
 async def async_setup_entry(
