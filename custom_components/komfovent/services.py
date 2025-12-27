@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import device_registry as dr
 
 from . import KomfoventCoordinator, registers
-from .const import DOMAIN, OperationMode
+from .const import DOMAIN, OperationMode, Controller
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -100,7 +100,11 @@ async def set_system_time(coordinator: KomfoventCoordinator) -> None:
     local_time = int((datetime.now(tz=local_tz) - local_epoch).total_seconds())
 
     # Write local time to the Komfovent unit
-    await coordinator.client.write(registers.C6.REG_EPOCH_TIME, local_time)
+    if coordinator.controller == Controller.C4:
+        # await coordinator.client.write(registers.C4.TIME, local_time)
+        raise NotImplementedError()
+    else:
+        await coordinator.client.write(registers.C6.REG_EPOCH_TIME, local_time)
 
 
 async def async_register_services(hass: HomeAssistant) -> None:
