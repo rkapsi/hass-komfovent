@@ -13,7 +13,7 @@ DEFAULT_HOST: Final = None
 DEFAULT_PORT = 502
 DEFAULT_SLAVE_ID: Final = 254
 DEFAULT_SCAN_INTERVAL = 30
-CONF_CONNECTOR: Final = "connector"
+CONF_PROTOCOL: Final = "protocol"
 
 # Options
 OPT_STEP_FLOW: Final = "step_flow"
@@ -31,10 +31,11 @@ DEFAULT_STEP_VOC: Final = 5.0
 DEFAULT_STEP_TIMER: Final = 5.0
 
 
-class Connector(StrEnum):
+class Protocol(StrEnum):
     """"Komfovent Protocol"""
     AUTO = "auto"
     C4 = "C4"
+
 
 class Controller(IntEnum):
     """Controllers."""

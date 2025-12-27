@@ -6,7 +6,7 @@ import logging
 from pymodbus import ModbusException
 from pymodbus.client import AsyncModbusTcpClient
 
-from .const import Connector
+from .const import Protocol
 
 from .registers import (
     Access,
@@ -20,7 +20,7 @@ _LOGGER = logging.getLogger(__name__)
 class KomfoventModbusClient:
     """Modbus client for Komfovent devices."""
 
-    def __init__(self, host: str, port: int = 502, connector = Connector.AUTO) -> None:
+    def __init__(self, host: str, port: int = 502, protocol = Protocol.AUTO) -> None:
         """Initialize the Modbus client."""
         self.client = AsyncModbusTcpClient(
             host=host,
@@ -31,7 +31,7 @@ class KomfoventModbusClient:
             reconnect_delay_max=60,
         )
 
-        self.connector = connector
+        self.protocol = protocol
         self._lock = asyncio.Lock()
 
     async def connect(self) -> bool:

@@ -10,8 +10,8 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import selector
 
 from .const import (
-    Connector,
-    CONF_CONNECTOR,
+    Protocol,
+    CONF_PROTOCOL,
     DEFAULT_NAME,
     DEFAULT_PORT,
     DOMAIN,
@@ -23,9 +23,9 @@ from .const import (
     OPT_STEP_VOC,
 )
 
-CONFIG_KOMFOVENT_CONNECTORS = [
-    {"label": "Auto", "value": Connector.AUTO.value},
-    {"label": "C4", "value": Connector.C4.value},
+CONFIG_KOMFOVENT_PROTOCOLS = [
+    {"label": "Auto", "value": Protocol.AUTO.value},
+    {"label": "C4", "value": Protocol.C4.value},
 ]
 
 CONFIG_SCHEMA = vol.Schema(
@@ -33,10 +33,10 @@ CONFIG_SCHEMA = vol.Schema(
         vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
         vol.Required(CONF_HOST): str,
         vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
-        vol.Required(CONF_CONNECTOR, default=CONFIG_KOMFOVENT_CONNECTORS[0]["value"]): selector(
+        vol.Required(CONF_PROTOCOL, default=CONFIG_KOMFOVENT_PROTOCOLS[0]["value"]): selector(
             {
                 "select": {
-                    "options": CONFIG_KOMFOVENT_CONNECTORS,
+                    "options": CONFIG_KOMFOVENT_PROTOCOLS,
                     "mode": "dropdown",
                 },
             }
