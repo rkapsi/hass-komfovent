@@ -85,99 +85,117 @@ class KomfoventCoordinator(DataUpdateCoordinator):
 
         return True
 
+    async def _async_update_data_C4(self) -> dict[str, Any]:
+        """Fetch data from Komfovent."""
+
+        data = {}
+
+        for register in registers.C4.POWER.sublist(2):
+            data.update({register: await self.client.read(register)})
+
+        return data
+
+    async def _async_update_data_C6(self) -> dict[str, Any]:
+        """Fetch data from Komfovent."""
+
+        data = {}
+
+        # Read primary control (1-34)
+        regs = registers.C6.REG_POWER.sublist(34)
+        
+        # Read connectivity, extra control (35-44)
+        # This has not been tested yet, it may be implemented in the future
+
+        # Read modes (100-158)
+        regs += registers.C6.REG_AWAY_FAN_SUPPLY.sublist(59)
+            
+        # Read humidity setpoints (159-162)
+        # This has not been tested yet, it may be implemented in the future
+
+        # Read Eco and air quality (200-217)
+        if (
+            self.controller in {Controller.C6, Controller.C6M}
+            and self.func_version < FUNC_VER_AQ_HUMIDITY
+        ):
+            regs += registers.C6.REG_ECO_MIN_TEMP.sublist(15)
+        else:
+            regs += registers.C6.REG_ECO_MIN_TEMP.sublist(18)
+
+        # Skip scheduler (300-555)
+
+        # Read active alarms (600-610)
+        regs += registers.C6.REG_ACTIVE_ALARMS_COUNT.sublist(11)
+            
+        # Skip alarm history (611-861)
+
+        # Read monitoring (900-957)
+        if (
+            self.controller in {Controller.C6, Controller.C6M}
+            and self.func_version < FUNC_VER_AQ_HUMIDITY
+        ):
+            regs += registers.C6.REG_STATUS.sublist(56)
+        else:
+            regs += registers.C6.REG_STATUS.sublist(58)
+        
+        # Read digital outputs (958-960)
+        # This has not been tested yet, it may be implemented in the future
+
+        for register in regs:
+            data.update({register: await self.client.read(register)})
+
+        # Read exhaust temperature (961)
+        if (
+            self.controller in {Controller.C6, Controller.C6M}
+            and self.func_version >= FUNC_VER_EXHAUST_TEMP
+        ):
+            try:
+                data.update({registers.C6.REG_EXHAUST_TEMP: await self.client.read(registers.C6.REG_EXHAUST_TEMP)})
+            except (ConnectionError, ModbusException) as error:
+                _LOGGER.debug("Failed to read exhaust temperature: %s", error)
+
+        # Read controller firmware version (1000-1001)
+        try:
+            data.update({registers.C6.REG_FIRMWARE: await self.client.read(registers.C6.REG_FIRMWARE)})
+        except (ConnectionError, ModbusException) as error:
+            _LOGGER.warning("Failed to read controller firmware version: %s", error)
+
+        # Read panel 1 firmware version (1002-1003)
+        if data.get(registers.C6.REG_CONNECTED_PANELS, 0) in [
+            ConnectedPanels.PANEL1,
+            ConnectedPanels.BOTH,
+        ]:
+            try:
+                data.update({registers.C6.REG_PANEL1_FW: await self.client.read(registers.C6.REG_PANEL1_FW)})
+            except (ConnectionError, ModbusException) as error:
+                _LOGGER.warning(
+                    "Failed to read panel 1 firmware version: %s", error
+                )
+
+        # Read panel 2 firmware version (1004-1005)
+        if data.get(registers.C6.REG_CONNECTED_PANELS, 0) in [
+            ConnectedPanels.PANEL2,
+            ConnectedPanels.BOTH,
+        ]:
+            try:
+                data.update({registers.C6.REG_PANEL2_FW: await self.client.read(registers.C6.REG_PANEL2_FW)})
+            except (ConnectionError, ModbusException) as error:
+                _LOGGER.warning(
+                    "Failed to read panel 2 firmware version: %s", error
+                )
+                
+        return data
+
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from Komfovent."""
+
         data = {}
 
         try:
-
-            if True:
-                for register in registers.C4.POWER.sublist(2):
-                    data.update({register: await self.client.read(register)})
-                return data
-
-            # Read primary control (1-34)
-            regs = registers.C6.REG_POWER.sublist(34)
-            
-            # Read connectivity, extra control (35-44)
-            # This has not been tested yet, it may be implemented in the future
-
-            # Read modes (100-158)
-            regs += registers.C6.REG_AWAY_FAN_SUPPLY.sublist(59)
-                
-            # Read humidity setpoints (159-162)
-            # This has not been tested yet, it may be implemented in the future
-
-            # Read Eco and air quality (200-217)
-            if (
-                self.controller in {Controller.C6, Controller.C6M}
-                and self.func_version < FUNC_VER_AQ_HUMIDITY
-            ):
-                regs += registers.C6.REG_ECO_MIN_TEMP.sublist(15)
+            if self.controller == Controller.C4:
+                data = self._async_update_data_C4()
             else:
-                regs += registers.C6.REG_ECO_MIN_TEMP.sublist(18)
-
-            # Skip scheduler (300-555)
-
-            # Read active alarms (600-610)
-            regs += registers.C6.REG_ACTIVE_ALARMS_COUNT.sublist(11)
+                data = self._async_update_data_C6()
                 
-            # Skip alarm history (611-861)
-
-            # Read monitoring (900-957)
-            if (
-                self.controller in {Controller.C6, Controller.C6M}
-                and self.func_version < FUNC_VER_AQ_HUMIDITY
-            ):
-                regs += registers.C6.REG_STATUS.sublist(56)
-            else:
-                regs += registers.C6.REG_STATUS.sublist(58)
-            
-            # Read digital outputs (958-960)
-            # This has not been tested yet, it may be implemented in the future
-
-            for register in regs:
-                data.update({register: await self.client.read(register)})
-
-            # Read exhaust temperature (961)
-            if (
-                self.controller in {Controller.C6, Controller.C6M}
-                and self.func_version >= FUNC_VER_EXHAUST_TEMP
-            ):
-                try:
-                    data.update({registers.C6.REG_EXHAUST_TEMP: await self.client.read(registers.C6.REG_EXHAUST_TEMP)})
-                except (ConnectionError, ModbusException) as error:
-                    _LOGGER.debug("Failed to read exhaust temperature: %s", error)
-
-            # Read controller firmware version (1000-1001)
-            try:
-                data.update({registers.C6.REG_FIRMWARE: await self.client.read(registers.C6.REG_FIRMWARE)})
-            except (ConnectionError, ModbusException) as error:
-                _LOGGER.warning("Failed to read controller firmware version: %s", error)
-
-            # Read panel 1 firmware version (1002-1003)
-            if data.get(registers.C6.REG_CONNECTED_PANELS, 0) in [
-                ConnectedPanels.PANEL1,
-                ConnectedPanels.BOTH,
-            ]:
-                try:
-                    data.update({registers.C6.REG_PANEL1_FW: await self.client.read(registers.C6.REG_PANEL1_FW)})
-                except (ConnectionError, ModbusException) as error:
-                    _LOGGER.warning(
-                        "Failed to read panel 1 firmware version: %s", error
-                    )
-
-            # Read panel 2 firmware version (1004-1005)
-            if data.get(registers.C6.REG_CONNECTED_PANELS, 0) in [
-                ConnectedPanels.PANEL2,
-                ConnectedPanels.BOTH,
-            ]:
-                try:
-                    data.update({registers.C6.REG_PANEL2_FW: await self.client.read(registers.C6.REG_PANEL2_FW)})
-                except (ConnectionError, ModbusException) as error:
-                    _LOGGER.warning(
-                        "Failed to read panel 2 firmware version: %s", error
-                    )
         except (ConnectionError, ModbusException) as error:
             _LOGGER.warning("Error communicating with Komfovent: %s", error)
             raise UpdateFailed from error
