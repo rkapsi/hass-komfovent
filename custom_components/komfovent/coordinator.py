@@ -192,10 +192,10 @@ class KomfoventCoordinator(DataUpdateCoordinator):
 
         try:
             if self.controller == Controller.C4:
-                data = self._async_update_data_C4()
+                data = await self._async_update_data_C4()
             else:
-                data = self._async_update_data_C6()
-                
+                data = await self._async_update_data_C6()
+
         except (ConnectionError, ModbusException) as error:
             _LOGGER.warning("Error communicating with Komfovent: %s", error)
             raise UpdateFailed from error
