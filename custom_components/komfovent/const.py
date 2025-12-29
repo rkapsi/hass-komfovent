@@ -209,3 +209,9 @@ class ResetSettings(IntEnum):
     AIR_QUALITY = 9
     ECO = 10
     ADVANCED = 11
+
+class Season(IntEnum):
+    """Bla"""
+    
+    SUMMER = 0
+    WINTER = 1

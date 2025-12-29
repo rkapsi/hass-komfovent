@@ -27,6 +27,7 @@ from .const import (
     OverrideActivation,
     SchedulerMode,
     TemperatureControl,
+    Season,
 )
 
 if TYPE_CHECKING:
@@ -40,7 +41,19 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSelect]:
-    return []
+    return [
+        KomfoventOperationModeSelect(
+            coordinator=coordinator,
+            register=registers.C4.SEASON,
+            enum_class=OperationMode,
+            entity_description=SelectEntityDescription(
+                key="season",
+                name="Season",
+                translation_key="season",
+                options=[season.name.lower() for season in Season],
+            ),
+        ),
+    ]
 
 def _create_selectors_C6(coordinator: KomfoventCoordinator) -> list[KomfoventSelect]:
     entities = [
