@@ -219,7 +219,6 @@ class Season_C4(IntEnum):
 class VentilationLevel_C4(IntEnum):
     """Bla"""
 
-    MODE1 = 0
-    MODE2 = 1
+    MODE1 = 1
+    MODE2 = 2
     MODE3 = 3
-    PROGRAM = 4

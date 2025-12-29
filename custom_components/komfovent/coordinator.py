@@ -93,6 +93,9 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         for register in registers.C4.POWER.sublist(2):
             data.update({register: await self.client.read(register)})
 
+        for register in registers.C4.VENTILATION_LEVEL_MANUAL.sublist(2):
+            data.update({register: await self.client.read(register)})
+
         return data
 
     async def _async_update_data_C6(self) -> dict[str, Any]:
