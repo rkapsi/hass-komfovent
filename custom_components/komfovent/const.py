@@ -223,6 +223,6 @@ class VentilationLevel_C4(IntEnum):
     MODE2 = 2
     MODE3 = 3
 
-class Mode_C4(IntEnum):
+class OperationMode_C4(IntEnum):
     MANUAL = 0
     AUTO = 1

@@ -29,7 +29,7 @@ from .const import (
     TemperatureControl,
     Season_C4,
     VentilationLevel_C4,
-    Mode_C4,
+    OperationMode_C4,
 )
 
 if TYPE_CHECKING:
@@ -58,12 +58,12 @@ def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSel
         KomfoventSelect(
             coordinator=coordinator,
             register=registers.C4.MODE,
-            enum_class=Mode_C4,
+            enum_class=OperationMode_C4,
             entity_description=SelectEntityDescription(
-                key="mode",
-                name="Mode",
-                icon="mdi:hvac",
-                options=[element.name.lower() for element in Mode_C4],
+                key="operation_mode",
+                name="Operation mode",
+                icon="mdi:toggle-switch",
+                options=[element.name.lower() for element in OperationMode_C4],
             ),
         ),
         KomfoventSelect(
