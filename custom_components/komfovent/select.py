@@ -42,7 +42,7 @@ _LOGGER = logging.getLogger(__name__)
 
 def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSelect]:
     return [
-        KomfoventOperationModeSelect(
+        KomfoventSelect(
             coordinator=coordinator,
             register=registers.C4.SEASON,
             enum_class=Season,
