@@ -29,6 +29,7 @@ from .const import (
     TemperatureControl,
     Season_C4,
     VentilationLevel_C4,
+    Mode_C4,
 )
 
 if TYPE_CHECKING:
@@ -51,7 +52,18 @@ def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSel
                 key="ventilation_level",
                 name="Ventilation level",
                 icon="mdi:hvac",
-                options=[lvl.name.lower() for lvl in VentilationLevel_C4],
+                options=[element.name.lower() for element in VentilationLevel_C4],
+            ),
+        ),
+        KomfoventSelect(
+            coordinator=coordinator,
+            register=registers.C4.MODE,
+            enum_class=Mode_C4,
+            entity_description=SelectEntityDescription(
+                key="mode",
+                name="Mode",
+                icon="mdi:hvac",
+                options=[element.name.lower() for element in Mode_C4],
             ),
         ),
         KomfoventSelect(
@@ -62,7 +74,7 @@ def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSel
                 key="season",
                 name="Season",
                 icon="mdi:sun-clock",
-                options=[season.name.lower() for season in Season_C4],
+                options=[element.name.lower() for element in Season_C4],
             ),
         ),
     ]

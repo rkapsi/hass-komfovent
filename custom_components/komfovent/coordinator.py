@@ -93,7 +93,10 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         for register in registers.C4.POWER.sublist(2):
             data.update({register: await self.client.read(register)})
 
-        for register in registers.C4.VENTILATION_LEVEL_MANUAL.sublist(2):
+        for register in registers.C4.VENTILATION_LEVEL_MANUAL.sublist(1):
+            data.update({register: await self.client.read(register)})
+
+        for register in registers.C4.MODE.sublist(1):
             data.update({register: await self.client.read(register)})
 
         return data
