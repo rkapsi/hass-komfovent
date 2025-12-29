@@ -49,7 +49,7 @@ def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSel
             register=registers.C4.VENTILATION_LEVEL_MANUAL,
             enum_class=VentilationLevel_C4,
             entity_description=SelectEntityDescription(
-                key="ventilation_level",
+                key="ventilation_level_manual",
                 name="Ventilation level",
                 icon="mdi:hvac",
                 options=[element.name.lower() for element in VentilationLevel_C4],

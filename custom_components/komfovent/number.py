@@ -58,24 +58,7 @@ VOC_MIN = 0
 VOC_MAX = 100
 
 def _create_numbers_C4(coordinator: KomfoventCoordinator, entry: ConfigEntry) -> list[TemperatureNumber]:
-
-    step_flow = entry.options.get(OPT_STEP_FLOW, DEFAULT_STEP_FLOW)
-
-    return [
-        KomfoventNumber(
-            coordinator=coordinator,
-            register=registers.C4.VENTILATION_LEVEL_CURRENT,
-            entity_description=NumberEntityDescription(
-                key="ventilation_level_current",
-                name="Ventilation level",
-                entity_category=EntityCategory.CONFIG,
-                native_min_value=0,
-                native_max_value=4,
-                native_step=step_flow,
-                native_unit_of_measurement=PERCENTAGE,
-            ),
-        ),
-    ]
+    return []
 
 
 def _create_numbers_C6(coordinator: KomfoventCoordinator, entry: ConfigEntry) -> list[TemperatureNumber]:

@@ -136,7 +136,17 @@ def create_aq_sensor(
 
 
 def _create_sensors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSensor]:
-    return []
+    return [
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.VENTILATION_LEVEL_CURRENT,
+            entity_description=SensorEntityDescription(
+                key="ventilation_level_current",
+                name="Ventilation level",
+                entity_category=EntityCategory.DIAGNOSTIC,
+            ),
+        ),
+    ]
 
 def _create_sensors_C6(coordinator: KomfoventCoordinator) -> list[KomfoventSensor]:
     """Get list of sensor entities."""
