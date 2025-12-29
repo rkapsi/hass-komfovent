@@ -45,7 +45,7 @@ def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSel
         KomfoventOperationModeSelect(
             coordinator=coordinator,
             register=registers.C4.SEASON,
-            enum_class=OperationMode,
+            enum_class=Season,
             entity_description=SelectEntityDescription(
                 key="season",
                 name="Season",
