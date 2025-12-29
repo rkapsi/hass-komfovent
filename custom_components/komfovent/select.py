@@ -51,7 +51,7 @@ def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSel
                 name="Season",
                 translation_key="season",
                 icon="mdi:sun-clock",
-                options=[season.name.lower() for season in Season],
+                options=[season.name.title() for season in Season],
             ),
         ),
     ]
