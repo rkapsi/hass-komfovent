@@ -93,7 +93,6 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         for register in registers.C4.POWER.sublist(2):
             data.update({register: await self.client.read(register)})
 
-        print(data)
         return data
 
     async def _async_update_data_C6(self) -> dict[str, Any]:
@@ -200,5 +199,7 @@ class KomfoventCoordinator(DataUpdateCoordinator):
         except (ConnectionError, ModbusException) as error:
             _LOGGER.warning("Error communicating with Komfovent: %s", error)
             raise UpdateFailed from error
+
+        _LOGGER.warning("Here: %s", data)
 
         return data
