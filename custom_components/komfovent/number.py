@@ -57,8 +57,25 @@ CO2_MAX = 2000
 VOC_MIN = 0
 VOC_MAX = 100
 
-def _create_numbers_C4(coordinator: KomfoventCoordinator) -> list[TemperatureNumber]:
-    return []
+def _create_numbers_C4(coordinator: KomfoventCoordinator, entry: ConfigEntry) -> list[TemperatureNumber]:
+
+    step_flow = entry.options.get(OPT_STEP_FLOW, DEFAULT_STEP_FLOW)
+
+    return [
+        KomfoventNumber(
+            coordinator=coordinator,
+            register=registers.C4.VENTILATION_LEVEL_CURRENT,
+            entity_description=NumberEntityDescription(
+                key="ventilation_level_current",
+                name="Ventilation level",
+                entity_category=EntityCategory.CONFIG,
+                native_min_value=0,
+                native_max_value=4,
+                native_step=step_flow,
+                native_unit_of_measurement=PERCENTAGE,
+            ),
+        ),
+    ]
 
 
 def _create_numbers_C6(coordinator: KomfoventCoordinator, entry: ConfigEntry) -> list[TemperatureNumber]:
@@ -627,9 +644,9 @@ async def create_numbers(coordinator: KomfoventCoordinator, entry: ConfigEntry) 
     """Create numbers entities for Komfovent device."""
 
     if coordinator.controller == Controller.C4:
-        return _create_numbers_C4(coordinator)
+        return _create_numbers_C4(coordinator, entry)
     else:
-        return _create_numbers_C6(coordinator)
+        return _create_numbers_C6(coordinator, entry)
 
 async def async_setup_entry(
     hass: HomeAssistant,
