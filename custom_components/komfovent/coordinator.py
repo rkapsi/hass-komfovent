@@ -200,6 +200,4 @@ class KomfoventCoordinator(DataUpdateCoordinator):
             _LOGGER.warning("Error communicating with Komfovent: %s", error)
             raise UpdateFailed from error
 
-        _LOGGER.warning("Here: %s", data)
-
         return data

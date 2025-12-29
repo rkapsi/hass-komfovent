@@ -210,8 +210,16 @@ class ResetSettings(IntEnum):
     ECO = 10
     ADVANCED = 11
 
-class Season(IntEnum):
+class Season_C4(IntEnum):
     """Bla"""
-    
+
     SUMMER = 0
     WINTER = 1
+
+class VentilationLevel_C4(IntEnum):
+    """Bla"""
+
+    MODE1 = 0
+    MODE2 = 1
+    MODE3 = 3
+    PROGRAM = 4
