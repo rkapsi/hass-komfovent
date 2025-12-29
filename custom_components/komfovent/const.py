@@ -222,3 +222,4 @@ class VentilationLevel_C4(IntEnum):
     MODE1 = 1
     MODE2 = 2
     MODE3 = 3
+    PROGRAM = 4
