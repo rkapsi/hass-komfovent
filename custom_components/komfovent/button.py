@@ -15,9 +15,43 @@ if TYPE_CHECKING:
 
     from . import KomfoventCoordinator
 from . import services
-from .const import DOMAIN
+from .const import DOMAIN, Controller
+
+def _create_buttons_C4(coordinator: KomfoventCoordinator) -> list[KomfoventButtonEntity]:
+    return []
 
 
+def _create_buttons_C6(coordinator: KomfoventCoordinator) -> list[KomfoventButtonEntity]:
+    return [
+        KomfoventSetTimeButton(
+            coordinator,
+            ButtonEntityDescription(
+                key="set_system_time",
+                name="Set System Time",
+                icon="mdi:clock",
+                entity_category=EntityCategory.CONFIG,
+            ),
+        ),
+        KomfoventCleanFiltersButton(
+            coordinator,
+            ButtonEntityDescription(
+                key="clean_filters",
+                name="Clean Filters Calibration",
+                icon="mdi:air-filter",
+                entity_category=EntityCategory.CONFIG,
+            ),
+        ),
+    ]
+
+
+async def create_buttons(coordinator: KomfoventCoordinator,) -> list[KomfoventButtonEntity]:
+    """Create button entities for Komfovent device."""
+
+    if coordinator.controller == Controller.C4:
+        return _create_buttons_C4(coordinator)
+    else:
+        return _create_buttons_C6(coordinator)
+    
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -26,28 +60,7 @@ async def async_setup_entry(
     """Set up Komfovent button from config entry."""
     coordinator: KomfoventCoordinator = hass.data[DOMAIN][config_entry.entry_id]
 
-    async_add_entities(
-        [
-            KomfoventSetTimeButton(
-                coordinator,
-                ButtonEntityDescription(
-                    key="set_system_time",
-                    name="Set System Time",
-                    icon="mdi:clock",
-                    entity_category=EntityCategory.CONFIG,
-                ),
-            ),
-            KomfoventCleanFiltersButton(
-                coordinator,
-                ButtonEntityDescription(
-                    key="clean_filters",
-                    name="Clean Filters Calibration",
-                    icon="mdi:air-filter",
-                    entity_category=EntityCategory.CONFIG,
-                ),
-            ),
-        ]
-    )
+    async_add_entities(await create_buttons(coordinator))
 
 
 class KomfoventButtonEntity(CoordinatorEntity, ButtonEntity):

@@ -15,6 +15,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import registers, services
 from .const import (
+    Controller,
     DOMAIN,
     OperationMode,
     TemperatureControl,
@@ -32,7 +33,24 @@ _LOGGER = logging.getLogger(__name__)
 SETPOINT_MIN_TEMP: Final = 5  # Minimum temperature supported by device (raw value 50)
 SETPOINT_MAX_TEMP: Final = 40  # Maximum temperature supported by device (raw value 400)
 
+def _create_climate_C4(coordinator: KomfoventCoordinator) -> list[KomfoventClimate]:
+    return []
 
+
+def _create_climate_C6(coordinator: KomfoventCoordinator) -> list[KomfoventClimate]:
+    return [
+        KomfoventClimate(coordinator)
+    ]
+
+
+async def create_climate(coordinator: KomfoventCoordinator,) -> list[KomfoventClimate]:
+    """Create climate entities for Komfovent device."""
+
+    if coordinator.controller == Controller.C4:
+        return _create_climate_C4(coordinator)
+    else:
+        return _create_climate_C6(coordinator)
+    
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -40,7 +58,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Komfovent climate device."""
     coordinator: KomfoventCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([KomfoventClimate(coordinator)])
+    async_add_entities(await create_climate(coordinator))
 
 
 class KomfoventClimate(CoordinatorEntity, ClimateEntity):

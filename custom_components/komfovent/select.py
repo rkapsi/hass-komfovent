@@ -49,7 +49,6 @@ def _create_selectors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSel
             entity_description=SelectEntityDescription(
                 key="season",
                 name="Season",
-                translation_key="season",
                 icon="mdi:sun-clock",
                 options=[season.name.title() for season in Season],
             ),
