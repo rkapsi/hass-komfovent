@@ -32,6 +32,17 @@ def _create_switches_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSwit
                 entity_category=None,
             ),
         ),
+        KomfoventSwitch(
+            coordinator=coordinator,
+            register=registers.C4.SEASON,
+            entity_description=SwitchEntityDescription(
+                key="season",
+                name="season",
+                icon="mdi:sun-clock",
+                entity_registry_enabled_default=True,
+                entity_category=None,
+            ),
+        ),
     ]
 
 def _create_switches_C6(coordinator: KomfoventCoordinator) -> list[KomfoventSwitch]:
