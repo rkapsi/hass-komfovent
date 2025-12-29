@@ -94,16 +94,20 @@ async def set_system_time(coordinator: KomfoventCoordinator) -> None:
     """Set system time on the Komfovent unit."""
     # Initialize local epoch (1970-01-01 00:00:00 in local timezone)
     local_tz = zoneinfo.ZoneInfo(str(coordinator.hass.config.time_zone))
-    local_epoch = datetime(1970, 1, 1, tzinfo=local_tz)
-
-    # Calculate local time as seconds since local epoch
-    local_time = int((datetime.now(tz=local_tz) - local_epoch).total_seconds())
+    now = datetime.now(tz=local_tz)
 
     # Write local time to the Komfovent unit
     if coordinator.controller == Controller.C4:
-        # await coordinator.client.write(registers.C4.TIME, local_time)
-        raise NotImplementedError()
+        await coordinator.client.write(registers.C4.TIME, now.hour << 8 + now.minute)
+        await coordinator.client.write(registers.C4.DAY_OF_THE_WEEK, now.weekday)
+        await coordinator.client.write(registers.C4.MONTH_DAY, now.month << 8 + now.day)
+        await coordinator.client.write(registers.C4.YEAR, now.year)
+
     else:
+        # Calculate local time as seconds since local epoch
+        local_epoch = datetime(1970, 1, 1, tzinfo=local_tz)
+        local_time = int((now - local_epoch).total_seconds())
+
         await coordinator.client.write(registers.C6.REG_EPOCH_TIME, local_time)
 
 
