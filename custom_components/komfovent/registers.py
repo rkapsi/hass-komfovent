@@ -92,9 +92,9 @@ class C4(Register):
     EXHAUST_VENTILATION_LEVEL4  = (1110, Datatype.int16, Access.READ_WRITE)
     
     OVR_ENABLE                  = (1111, Datatype.int16, Access.READ_WRITE)
-    OVR_TIME_SET                = (1112, Datatype.int16, Access.READ_WRITE)
-    OVR_TIME_GET                = (1113, Datatype.int16, Access.READ_ONLY)
-    AHU_FAN_STATUS              = (1114, Datatype.binary, Access.READ_ONLY)
+    OVR_TIME                    = (1112, Datatype.int16, Access.READ_WRITE)
+    OVR_TIME_CURRENT            = (1113, Datatype.int16, Access.READ_ONLY)
+    AHU_FANS_STATUS             = (1114, Datatype.binary, Access.READ_ONLY)
     SUPPLY_FAN_LEVEL            = (1115, Datatype.int16, Access.READ_ONLY)
     EXHAUST_FAN_LEVEL           = (1116, Datatype.int16, Access.READ_ONLY)
 

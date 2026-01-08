@@ -154,8 +154,6 @@ def _create_sensors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSenso
                 name="Recuperator level",
                 entity_category=EntityCategory.DIAGNOSTIC,
                 native_unit_of_measurement=PERCENTAGE,
-                state_class=SensorStateClass.MEASUREMENT,
-                suggested_display_precision=0,
             ),
         ),
         KomfoventSensor(
@@ -166,8 +164,6 @@ def _create_sensors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSenso
                 name="Electric heater level",
                 entity_category=EntityCategory.DIAGNOSTIC,
                 native_unit_of_measurement=PERCENTAGE,
-                state_class=SensorStateClass.MEASUREMENT,
-                suggested_display_precision=0,
             ),
         ),
         KomfoventSensor(
@@ -178,8 +174,6 @@ def _create_sensors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSenso
                 name="Water heating level",
                 entity_category=EntityCategory.DIAGNOSTIC,
                 native_unit_of_measurement=PERCENTAGE,
-                state_class=SensorStateClass.MEASUREMENT,
-                suggested_display_precision=0,
             ),
         ),
         KomfoventSensor(
@@ -190,8 +184,46 @@ def _create_sensors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSenso
                 name="Water cooling level",
                 entity_category=EntityCategory.DIAGNOSTIC,
                 native_unit_of_measurement=PERCENTAGE,
-                state_class=SensorStateClass.MEASUREMENT,
-                suggested_display_precision=0,
+            ),
+        ),
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.OVR_TIME_CURRENT,
+            entity_description=SensorEntityDescription(
+                key="ovr_time_current",
+                name="OVR time",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                native_unit_of_measurement=PERCENTAGE,
+            ),
+        ),
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.AHU_FANS_STATUS,
+            entity_description=SensorEntityDescription(
+                key="ahu_fans_status",
+                name="AHU fans status",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                native_unit_of_measurement=PERCENTAGE,
+            ),
+        ),
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.SUPPLY_FAN_LEVEL,
+            entity_description=SensorEntityDescription(
+                key="supply_fan_level",
+                name="Supply fan level",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                native_unit_of_measurement=PERCENTAGE,
+            ),
+        ),
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.EXHAUST_FAN_LEVEL,
+            entity_description=SensorEntityDescription(
+                key="exhaust_fan_level",
+                name="Exhaust fan level",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                native_unit_of_measurement=PERCENTAGE,
             ),
         ),
     ]
