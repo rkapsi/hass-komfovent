@@ -58,7 +58,52 @@ VOC_MIN = 0
 VOC_MAX = 100
 
 def _create_numbers_C4(coordinator: KomfoventCoordinator, entry: ConfigEntry) -> list[TemperatureNumber]:
-    return []
+    return [
+        KomfoventNumber(
+            coordinator=coordinator,
+            register=registers.C4.RECUPERATOR_LEVEL,
+            entity_description=NumberEntityDescription(
+                key="recuperator_level",
+                name="Recuperator level",
+                native_min_value=0,
+                native_max_value=100,
+                native_unit_of_measurement=PERCENTAGE,
+            ),
+        ),
+        KomfoventNumber(
+            coordinator=coordinator,
+            register=registers.C4.ELECTRIC_HEATER_LEVEL,
+            entity_description=NumberEntityDescription(
+                key="electric_heater_level",
+                name="Electric heater level",
+                native_min_value=0,
+                native_max_value=100,
+                native_unit_of_measurement=PERCENTAGE,
+            ),
+        ),
+        KomfoventNumber(
+            coordinator=coordinator,
+            register=registers.C4.WATER_HEATING_LEVEL,
+            entity_description=NumberEntityDescription(
+                key="water_heating_level",
+                name="Water heating level",
+                native_min_value=0,
+                native_max_value=100,
+                native_unit_of_measurement=PERCENTAGE,
+            ),
+        ),
+        KomfoventNumber(
+            coordinator=coordinator,
+            register=registers.C4.WATER_COOLING_LEVEL,
+            entity_description=NumberEntityDescription(
+                key="water_cooling_level",
+                name="Water cooling level",
+                native_min_value=0,
+                native_max_value=100,
+                native_unit_of_measurement=PERCENTAGE,
+            ),
+        ),
+    ]
 
 
 def _create_numbers_C6(coordinator: KomfoventCoordinator, entry: ConfigEntry) -> list[TemperatureNumber]:
