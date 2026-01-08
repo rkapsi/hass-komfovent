@@ -146,6 +146,54 @@ def _create_sensors_C4(coordinator: KomfoventCoordinator) -> list[KomfoventSenso
                 entity_category=EntityCategory.DIAGNOSTIC,
             ),
         ),
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.RECUPERATOR_LEVEL,
+            entity_description=SensorEntityDescription(
+                key="recuperator_level",
+                name="Recuperator level",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                native_unit_of_measurement=PERCENTAGE,
+                state_class=SensorStateClass.MEASUREMENT,
+                suggested_display_precision=0,
+            ),
+        ),
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.ELECTRIC_HEATER_LEVEL,
+            entity_description=SensorEntityDescription(
+                key="electric_heater_level",
+                name="Electric heater level",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                native_unit_of_measurement=PERCENTAGE,
+                state_class=SensorStateClass.MEASUREMENT,
+                suggested_display_precision=0,
+            ),
+        ),
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.WATER_HEATING_LEVEL,
+            entity_description=SensorEntityDescription(
+                key="water_heating_level",
+                name="Water heating level",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                native_unit_of_measurement=PERCENTAGE,
+                state_class=SensorStateClass.MEASUREMENT,
+                suggested_display_precision=0,
+            ),
+        ),
+        KomfoventSensor(
+            coordinator=coordinator,
+            register=registers.C4.WATER_COOLING_LEVEL,
+            entity_description=SensorEntityDescription(
+                key="water_cooling_level",
+                name="Water cooling level",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                native_unit_of_measurement=PERCENTAGE,
+                state_class=SensorStateClass.MEASUREMENT,
+                suggested_display_precision=0,
+            ),
+        ),
     ]
 
 def _create_sensors_C6(coordinator: KomfoventCoordinator) -> list[KomfoventSensor]:
